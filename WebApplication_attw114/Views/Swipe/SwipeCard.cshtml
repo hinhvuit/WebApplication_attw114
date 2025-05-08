@@ -1,0 +1,223 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Thong Tin Quet Ma</title>
+    <link href="fonts/awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/Swispe.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="~/js/loader.js"></script>
+    <link href="~/css/magnific-popup.css" rel="stylesheet" />
+    <script src="~/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/js/civetjs.js"></script>
+    <style type="text/css">
+        .container.main{
+            height:92vh;
+        }
+        .time-box{
+            font-size:55px;
+            line-height:70px;
+        }
+        .swispecard h3{
+            font-size:40px;
+        }
+        .swispecard .sp{
+            font:40px;
+            line-height:50px;
+            font-weight:bold;
+        }
+        .box.box-left img{
+            width:100%;
+            height:380px;
+        }
+        .box.box-right{
+            padding-left:20px;
+        }
+        .red .col a{
+            color:red;
+        }
+        .red .infor{
+            background-color:red;
+        }
+        .red .infor .btn-success{
+            background-color:red;
+        }
+        .col-left{
+            width: 80%;
+            padding-top: 20px;
+            padding-left: 2%;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .mfp-inline-holder .mfp-content, .mfp-ajax-holder .mfp-content{
+            width:90%;
+            background:#fcfcfc;
+            border-radius:25px;
+        }
+        .row{
+            display:flex;
+        }
+        .mfp-content #content-area{
+        }
+        .content-area {
+            margin-top:20px;
+            float:left;
+            width:100%;
+            padding:0 2%;
+            margin-bottom:20px;
+        }
+        .content-area p{
+            padding:0;
+            margin:0;
+        }
+        .area-left{
+            float:left;
+            width:50%;
+            font-size:24px;
+        }
+        .area-right{
+            float:left;
+            width:50%;
+            text-align:right;
+            font-size:24px;
+            padding-top:20px;
+        }
+        .col{
+            width:20%;
+        }
+        .area-sub{
+            float:left;
+            width:100%;
+        }
+        .mfp-container{
+        }
+        .area-sub .mfp-close{
+            width:100%;
+            top:inherit;
+            bottom:-4vh;
+            height:60px;
+            line-height:50px;
+            border-radius:12px;
+            background-color:#fff;
+        }
+        .content-area .row{
+            padding-left:20px;
+            padding-right:20px;
+            border-top:1px solid #ddd;
+            padding-bottom:10px;
+        }
+        .green{
+            padding:5px;
+            background-color:#ddd;
+            border-radius:10px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="bg-main">
+            <div class="time-box">
+                <time class="time" id="nowTime"></time>
+            </div>
+            <div class="container main" runat="server" id="div_infor">
+                <section class="main-content">
+                    <div class="row">
+                        <div class="col-left">
+                            <a href="#" id="list_Area">授权廠區名單 Danh sách nhà xưởng có quyền hạn<span class="glyphicon glyphicon-chevron-down"></span></a>
+                            <div class="content-area mfp-hide" id="content-area">
+                                @foreach (var ListRule in ViewData["AreaPower"] as List<AreaPower>)
+                                {
+                                    <div class="row">
+                                        <div class="area-left">
+                                            <p>@ListRule.AreaName</p>
+                                            <span class="green">权限正常 Quyền Bình Thường</span>
+                                        </div>
+                                        <div class="area-right">
+                                            設為默認 Đặt Làm Mặc Định
+                                        </div>
+                                    </div>
+                                }
+                                <asp:Repeater runat="server" ID="rpt_AreaPower">
+                                    <ItemTemplate>
+                                        <div class="row">
+                                            <div class="area-left">
+                                                <p><%# Eval("AreaName") %></p>
+                                                <span class="green">权限正常 Quyền Bình Thường</span>
+                                            </div>
+                                            <div class="area-right">
+                                                設為默認 Đặt Làm Mặc Định
+                                            </div>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                                <div class="area-sub">
+                                    <input type="submit" value="確認 Xác Nhận" name="xacnhantt" class="mfp-close" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <a ID="lbtn_QrLink" href="#"><p class="glyphicon glyphicon-qrcode" aria-hidden="true"></p></a>
+                        </div>
+                    </div>
+                    <div class="infor">
+                        <div class="main-infor">
+                            <div class="box-title">
+                                <h3 style="color:white;"><asp:Label runat="server" Text="進入廠區許可 Có Quyền Hạn Vào Xưởng" ID="lbl_Power"></asp:Label></h3>
+                            </div>
+                            <div class="box box-left">
+                                <img
+                            </div>
+                            <div class="box box-right">
+                                <h3 class="box-ct empname"><asp:Label runat="server" ID="lbl_empName">@ViewBag.EmpName</asp:Label> </h3>
+                                <h3 class="box-ct empno">工號 Mã Thẻ: <asp:Label runat="server" ID="lbl_empNo">@ViewBag.EmpNo</asp:Label></h3>
+                                <div class="update-infor">
+                                    <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                                    <a ID="lbtn_updateinfor" Text="查看個人信息 Xem Thông Tin Cá Nhân" CssClass="btn btn-success"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swispecard">
+                        <h3>您刷卡於 Bạn Đã Quẹt Thẻ Tại: @ViewBag.Location </h3>
+                        <h3><span>@ViewBag.Time</span></h3>
+                        <h3><span></span></h3>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="loader"></div>
+    </form>
+    <script type="text/javascript">
+        setInterval("GetTime();", 1000);
+        function GetTime() {
+            var date = new Date().toLocaleString('en-US', { hour12: false }).split(" ");
+
+            // Now we can access our time at date[1], and monthdayyear  date[0]
+            var time = date[1];
+            var mdy = date[0];
+
+            // We then parse  the mdy into parts
+            mdy = mdy.split('/');
+            var month = parseInt(mdy[0]);
+            var day = parseInt(mdy[1]);
+            var year = parseInt(mdy[2]);
+
+            // Putting it all together
+            var formattedDate = year + '-' + month + '-' + day + ' ' + time;
+            document.getElementById('nowTime').innerHTML = formattedDate;
+        };
+        $('#list_Area').magnificPopup({
+            items: {
+                src: '#content-area',
+                type: 'inline'
+            }
+        });
+    </script>
+</body>
+</html>

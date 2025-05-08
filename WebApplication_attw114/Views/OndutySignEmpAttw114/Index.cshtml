@@ -1,0 +1,833 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <style type="text/css">
+        .OutWidth{
+            width:1100px;
+            position:relative;
+            background-color:aliceblue;
+            margin:0 auto;
+        }
+        .Textcenter{
+            text-align:center;
+        }
+        .Tile{
+            border-style:dotted;
+            border-width:1px;
+            position:relative;
+            font-size:32px;
+            font-weight:bold;
+        }
+        #Contentbody
+        {
+            position:relative;
+            margin-top:30px;
+        }
+        .textlabel1{
+            text-align:left;
+            padding-left:10px;
+            font-weight:bold;
+            font-size:14px;
+        }
+        .textblue{
+            color:blue;
+        }
+        .Style_Section {
+            margin-top: 4px;
+            color: #005fb0;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: left;
+            line-height: 30px;
+            padding-left: 10px;
+            border: solid 1px #ddd;
+            height: 30px;
+            background-color:#e8fffe;
+        }
+        .backgroundOfHeader01{
+            margin-top: 4px;
+            padding-left: 10px;
+        }
+        .table01 {
+            border: solid 1px #ddd;
+            width: 1100px;
+            border-collapse:collapse;
+        }
+        .table01 tr td{
+            border: solid 1px #ddd;
+            background-color: #fff;
+        }
+        .borderTdHead {
+            width: 120px;
+            background-color: #F0F5FB;
+        }
+        .testStyle{
+            
+        }
+        .backGroundQV {
+            background-image:url('../Images/mapQv.png');
+        }
+        .backGroundDV {
+            background-image:url('../Images/Map_DongVangH.png');
+        }
+    </style>
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/civetjs.js"></script>
+    
+</head>
+<body>
+    <div class="OutWidth Textcenter">
+        
+        <div class="Tile">
+            <label id="label_Title">@ViewBag.Title</label>
+        </div>
+        <div id="Contentbody">
+            <div hidden="hidden">
+                <input name="Radio1" id="Radio1" type="radio" checked="checked" value="1" /><label>Nhân viên PCCC</label>&nbsp;
+                <input name="Radio1" id="Radio2" type="radio" value="2" /><label>Nhân viên cơ động</label>
+            </div>
+            <div class="Style_Section">
+                I.<label>Thông tin người tuần tra</label>
+            </div>
+            <div>
+                <table class="table01">
+                    <tr>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Mã thẻ</label>
+                        </td>
+                        <td>
+                            <label class="textblue" id="txt_EmpNo">
+                                @ViewBag.EmpNoFromIc.ToString()
+                            </label>
+                        </td>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Họ tên</label>
+                        </td>
+                        <td>
+                            <label class="textblue" id="txt_EmpName">
+                                @ViewBag.testNameFromIc.ToString()
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="Style_Section">
+                II.<label>Thông tin điểm ký tuần tra</label>
+            </div>
+            <div>
+                <table class="table01">
+                    <tr>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Tên nhà xưởng</label>
+                        </td>
+                        <td>
+                            <label id="txt_FactoryName">@ViewBag.AreaName</label>
+                        </td>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Vị trí tuần tra</label>
+                        </td>
+                        <td>
+                            <label id="txt_detailLocation">@ViewBag.LocationDetail</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="textlabel1 borderTdHead" style="background-color:#e8fffe;">
+                            <label>Nội dung tuần tra địa điểm hiện tại</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table class="table01" style="margin-bottom:15px">
+                                <tr style="background-color:#e8fffe;">
+                                    <td style="font-size:12px;width:120px !important">
+                                        <label>STT</label>
+                                    </td>
+                                    <td style="font-size:14px">
+                                        <label>Các hạng mục cần kiểm tra</label>
+                                    </td>
+                                </tr>
+                                @foreach(var ListRule in ViewData["ListRule"] as List<ListRuleOfOndutyAttw>)
+                                {
+                                    <tr style="font-size:12px">
+                                        <td style="width:120px !important">
+                                            @ListRule.Stt
+                                        </td>
+                                        <td style="text-align:left; padding-left:20px">
+                                            @ListRule.RuleDetailName
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Trạng thái</label>
+                        </td>
+                        <td>
+                            <select id="Select1">
+                                <option value="1">Bình thường</option>
+                                <option value="0">Bất thường</option>
+                            </select>
+                        </td>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Hình ảnh</label>
+                        </td>
+                        <td>
+                            <input type="file" id="FileupLoadImage" name="photo" accept=".jpg, .png, .jpeg" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="textlabel1 borderTdHead">
+                            <label>Ghi chú</label>
+                        </td>
+                        <td colspan="3">
+                            <textarea id="TextArea_SignNote" rows="3" cols="120"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="OutWidth">
+                <input style="width:200px;height:40px"  id="btn_Submit" type="submit" value="Ký duyệt" />
+                <input hidden="hidden" style="width:200px;height:30px" id="btn_test" type="button" value="test" />
+                
+            </div>
+            <div hidden="hidden">
+                <input type="button" id="btn_Upload" value="Upload" />
+            </div>
+            <div class="Style_Section">
+                III.<label>Bản đồ ký duyệt tuần tra</label>
+            </div>
+            <div style="margin-top:10px" >
+                @if(@ViewBag.AreaID.ToString() == "3")
+                {
+                    <canvas id="mycanvas" width="1100" height="950" style="background: url('../Images/mapQv.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "99")
+                {
+                    <canvas id="mycanvas" width="1280" height="960" style="background: url('../Images/DongVang.jpg')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "5")
+                {
+                    <canvas id="mycanvas" width="1100" height="550" style="background: url('../Images/QuangChauFM.PNG')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "101")
+                {
+                    <canvas id="mycanvas" width="1100" height="400" style="background: url('../Images/QuangChauKhuP.PNG')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "69")
+                {
+                    <canvas id="mycanvas" width="820" height="556" style="background: url('../Images/BanDothienKim.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "31")
+                {
+                    <canvas id="mycanvas" width="845" height="464" style="background: url('../Images/KhuCQV.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "32")
+                {
+                    <canvas id="mycanvas" width="837" height="551" style="background: url('../Images/MapBN3.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "60")
+                {
+                    <canvas id="mycanvas" width="731" height="540" style="background: url('../Images/MapJusdaYenTrung.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "33")
+                {
+                    <canvas id="mycanvas" width="738" height="500" style="background: url('../Images/MapQV3.png')">
+                    </canvas>
+                }
+                else if(@ViewBag.AreaID.ToString() == "11")
+                {
+                    <canvas id="mycanvas" width="1026" height="767" style="background: url('../Images/mapqckhui.png')">
+                    </canvas>
+
+                }
+                else
+                {
+                    <canvas id="mycanvas" width="1100" height="960" style="background: url('../Images/mapQv.png')">
+                    </canvas>
+                }
+            </div>
+            <form id="form1" hidden="hidden">
+                <label>Content of Viewbag:</label><label>@ViewBag.testStr</label>
+                <label>Code:</label><label id="Code_01">@ViewBag.Code</label><label hidden="hidden" id="Code02">@Context.Request.Query["Code"]</label>
+                
+                <label>User name:</label><label id="txt_name1"></label>
+
+            </form>
+
+            <div class="Style_Section">
+                IV.<label>Lịch sử ký duyệt tuần tra</label>
+            </div>
+            <div class="OutWidth">
+                <table class="table01">
+                    <tr>
+                        <td>
+                            <label>Vị trí</label>
+                        </td>
+                        <td>
+                            <label>Trạng thái ký duyệt</label>
+                        </td>
+                        <td>
+                            <label>Trạng thái điểm ký duyệt</label>
+                        </td>
+                        <td>
+                            <label>Ghi chú</label>
+                        </td>
+                        <td>
+                            <label>Thời gian</label>
+                        </td>
+                        <td>
+                            <label>Hình ảnh</label>
+                        </td>
+                    </tr>
+                        @foreach(var listtest in ViewData["ListHistorySign"] as List<Model_HistorySign>)
+                        {
+                            <tr>
+                                <td>
+                                    @listtest.LocationDetailName
+                                </td>
+                                <td>
+                                    @if(@listtest.Status == 0)
+                                    {
+                                        <label>Chưa ký</label>
+                                    }
+                                    else
+                                    {
+                                        <label>Đã ký</label>
+                                    }
+                                </td>
+                                <td>
+                                    @if(@listtest.Status == 0)
+                                    {
+                                        <label></label>
+                                    }
+                                    else if(@listtest.Status == 3)
+                                    {
+                                        <label style="color:orangered">Bất thường</label>
+                                    }
+                                    else
+                                    {
+                                        <label>Bình thường</label>
+                                    }
+                                </td>
+                                <td>
+                                    @if(@listtest.Memo.ToString() == "Na" || @listtest.Memo.ToString() ==""|| @listtest.Memo.ToString() ==null)
+                                    {
+                                        <label></label>
+                                    }
+                                    else
+                                    {
+                                        <label>@listtest.Memo</label>
+                                    }
+                                </td>
+                                <td>
+                                    @listtest.Workdate
+                                </td>
+                                <td>
+                                    @if(@listtest.Image.ToString() == "Na" || @listtest.Image.ToString() ==""|| @listtest.Image.ToString() ==null)
+                                    {
+                                        <label></label>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Upload/@listtest.Image">Chi tiết</a>
+                                    }
+                            </td>
+                            </tr>
+                        }
+
+                </table>
+            </div>
+        </div>
+        
+        <div>
+            <input type="button"  id="btn_testLocation" width="140" height="60" value="Test Loca" />
+        </div>
+        <label hidden="hidden" id="lbl_EmpNameFromIC">@ViewBag.testNameFromIc</label>
+        <label hidden="hidden" id="lbl_EmpNoFromIC">@ViewBag.EmpNoFromIc</label>
+        <label hidden="hidden" id="LocationID">@ViewBag.LocaiontID</label>
+    </div>
+    <label hidden="hidden" id="lbl_FormType">@ViewBag.Type</label>
+    <label hidden="hidden" id="lbl_latitude">@ViewBag.latitude</label>
+    <label hidden="hidden"  id="lbl_longitude">@ViewBag.longitude</label>
+
+    @Html.Hidden("RedirectToSuccess", Url.Action("Index", "Success"));
+    @foreach(var listtest in ViewData["ListHistorySign"] as List<Model_HistorySign>)
+        {
+            <script type="text/javascript">
+                var canvas = document.getElementById("mycanvas");
+                var contextt = canvas.getContext("2d");
+
+                var status1 = @listtest.Status.ToString();
+                var color;
+                if (status1 == "1" || status1 == "3") {
+                    color = '#00FF00';
+                } else {
+                    color = '#FF0000';
+                }
+                centerX = @listtest.X;
+                centerY = @listtest.Y;
+                radius = 12;
+                contextt.beginPath();
+                contextt.fillStyle = color;
+                contextt.strokeStyle = color;
+                contextt.lineWidth = 2;
+                contextt.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+                contextt.fill();
+                contextt.stroke();
+            </script>
+        }
+     <script type="text/javascript">
+        //var codeForIcvet = "3C96DMLqb4K1iuj5sgJOgchR4m-UoxsVFsVRpw8xtet03P1w";
+        var codeForIcvet = $('#Code02').text();
+        TypeForm = 1;
+
+        function CallApi() {
+            /*var code_i = $('#Code02').text();
+            var parameter = {
+                code: codeForIcvet,
+                appid: "A36PAwlql7vvuGDueqKSMw2"
+            };
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                url: 'http://civetInterface.foxconn.com/open/get_user_info_bycode',
+                data: JSON.stringify(parameter),
+                success: function(daatt) {
+                    if (daatt['realname'] != null) {
+                        $("#txt_EmpName").html(daatt['realname']);
+                        $("#txt_EmpNo").html(daatt['civetno']);
+
+                    }
+                    else {
+                        //alert('Complete name: '+ daatt['realname']);
+                    }
+
+                },
+                error: function() {
+                    alert('An error occurred uploading data.');
+                }
+            });*/
+
+        };
+
+        /* after is a function get ListHistory of sign*/
+        function getListTest(){
+            var LocationIDstr = $("#LocationID").text();
+            var EmpNoIDstr = $("#lbl_EmpNoFromIC").text();
+            var parameter = {
+                //LocationID: 'CGQV01',
+                LocationID: LocationIDstr,
+                //EmpNo: 'V0510589'
+                EmpNo: EmpNoIDstr
+            }
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType:'application/json',
+                data: JSON.stringify(parameter),
+                url: '/OndutySignEmpAttw114/GetHistorySignNow',
+                success: function(dataOut) {
+                    alert('LocationDetailName1:' + dataOut[1]['LocationDetailName']);
+
+                    var canvas = document.getElementById("mycanvas");
+                    var contextt = canvas.getContext("2d");
+
+                    /*$.each($.parseJSON(dataOut), function (i, itemData) {*/
+                    jQuery.each(dataOut, function(index, itemData) {
+                        var status1 = itemData.Status.toString();
+                        var color;
+                        if (status1 == "1" || status1 == "3") {
+                            color = '#00FF00';
+                        } else {
+                            color = '#FF0000';
+                        }
+                        centerX = itemData.X;
+                        centerY = itemData.Y;
+                        radius = 12;
+                        contextt.beginPath();
+                        contextt.fillStyle = color;
+                        contextt.strokeStyle = color;
+                        contextt.lineWidth = 2;
+                        contextt.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+                        contextt.fill();
+                        contextt.stroke();
+
+                        //break;
+                    });
+                    
+                    
+                },
+                error: function() {
+                    alert('error get List history Sign');
+                }
+            });
+        };
+
+
+        window.onload = function () {
+
+            /*
+            var canvas = document.getElementById("mycanvas");
+            var contextt = canvas.getContext("2d");
+            centerX = 100;
+            centerY = 100;
+            radius = 12;
+            contextt.beginPath();
+            contextt.fillStyle = '#0077aa';
+            contextt.strokeStyle = '#0077aa';
+            contextt.lineWidth = 2;
+            contextt.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            contextt.fill();
+            contextt.stroke();
+            */
+            CallApi();
+            //getListTest();
+            
+        };
+
+        
+
+        /* Function Upload File */
+        function UploadImageFile() {
+            var retval;
+            var files = document.getElementById('FileupLoadImage').files;// $('#file').files[0];// e.target.files;
+            var fileName = document.getElementById("FileupLoadImage").files[0].name;
+            var fileExtension = fileName.split('.').pop();
+
+            var today = new Date();
+            var Nameorigin = today.getFullYear().toString() + today.getMonth().toString() + today.getDate().toString()+ today.getHours().toString()+ today.getMinutes().toString() + today.getSeconds().toString()+ today.getMilliseconds().toString();
+            if (files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("file" + x, files[x]);
+                        //data.append(base64String, base64String);
+                    }
+                    data.append("ImageName", Nameorigin.toString());
+                    $.ajax({
+                        type: "POST",
+                        url: '/OndutySignEmpAttw114/UploadImageNew1',
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function(result) {
+                            $("#FileupLoadImage").val(null);
+                            //alert(result);
+                        },
+                        error: function(xhr, status, exception) {
+                            //alert(''+exception);
+                        }
+                    });
+                } else {
+                    alert("Upgrade your browser!");
+                }
+            }
+            retval = Nameorigin +"."+ fileExtension;
+            return retval;
+        };
+        //upload image
+        $("#btn_Upload").click(function() {
+            /*
+            var files = document.getElementById('FileupLoadImage').files;// $('#file').files[0];// e.target.files;
+            if (files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("file" + x, files[x]);
+                        //data.append(base64String, base64String);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '/OndutySignEmpAttw114/UploadImage',
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            alert(result);
+                            $("#FileupLoadImage").val(null);
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            alert('Something is going to wrong please try agan!');
+                        }
+                    });
+                } else {
+                    alert("Upgrade your browser!");
+                }
+            }
+            */
+           
+            var ImageName;
+            var file1 = document.getElementById('FileupLoadImage');
+            if (file1.files.length != 0) {
+                ImageName = UploadImageFile();
+                alert('Da upload file:' + ImageName);
+            }
+            else {
+                alert("Khong co file nao duoc chon");
+
+            }
+            
+            
+            /*var fileName = document.getElementById("FileupLoadImage").files[0].name;
+            var fileExtension = fileName.split('.').pop();
+            alert("."+fileExtension);*/
+            /*
+            $.ajax({
+            type: "POST",
+            //url: '/OndutySignEmpAttw114/Testprint',
+            url: '@Url.Action("Testprint")',
+            data: {mmm: "dadx", bbb: "cvbxcvb"},
+            dataType: "text",
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (req, status, error) {
+                alert(error);
+                alert(req);
+            }
+            });*/
+
+        });
+
+        // thay doi binh thuong va bat thuong
+        /*$("#Select1").change(function() {
+            TypeForm = 1;
+            //alert("you have changed value to:" + $(this).val());
+            alert("you have changed value to:" + $(this).find("option:selected").text());
+        });
+        */
+        $("#Radio1").change(function() {
+            alert("you have changed value from:" + TypeForm);
+            TypeForm = 1;
+        });
+
+        $("#Radio2").change(function() {
+            alert("you have changed value from:" + TypeForm);
+            TypeForm = 2;
+            //alert("you have changed value to:" + $(this).val());
+        });
+        function delay(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function OnsubMit() {
+            var files = document.getElementById('FileupLoadImage').files;// $('#file').files[0];// e.target.files;
+            var file1 = document.getElementById('FileupLoadImage');
+            var ImageName;
+            if (file1.files.length != 0) {
+                ImageName = UploadImageFile();
+                delay(1200);
+                console.log('file name:'+ImageName);
+            }
+            else {
+                ImageName = "Na";
+            }
+            var RederectUrl = $("#RedirectToSuccess").val();
+
+            var Isoke = $("#Select1").val();
+            var contentSign;
+            if ($("#TextArea_SignNote").val() == null || $("#TextArea_SignNote").val() == "") {
+                contentSign = "Na";
+            }
+            else {
+                contentSign = $("#TextArea_SignNote").val();
+            }
+            var EmpNostr = $("#lbl_EmpNoFromIC").text();
+            var EmpNamestr = $("#lbl_EmpNameFromIC").text();
+            var LocationIDstr = $("#LocationID").text();
+            var parameter = {
+                Type: 1,
+                EmpNo: EmpNostr,
+                EmpName: EmpNamestr,
+                LocationID: LocationIDstr,
+                Isoke: Isoke,
+                ImageName: ImageName,
+                Notes: contentSign
+            }
+            $.ajax({
+                type: 'POST',
+                dataType: 'text',
+                url: '/OndutySignEmpAttw114/SignAttw',
+                data:parameter,
+                success: function(daa) {
+                    //alert('Complete name: '+ daa['StatusContent']);
+                    location.href = RederectUrl;
+                },
+                error: function(daa,status,exception) {
+                    alert('An error occurred uploading data exception:'+ex);
+                }
+            });
+        };
+
+        /* COMMIT Click */
+        $('#btn_Submit').click(function () {
+            //$('#txt_test').html("aaaaa1");
+            //$('#txt_testTxt').val("aaaaa1");
+            //document.getElementById('txt_testTxt').value = "mmmm";
+            //document.getElementById('txt_test').innerHTML = "bbbbb";
+            //alert("Handler for .click() called.");
+
+            //if ($("#LocationID").text() == "CGQV15") {
+                cm.getGPS({  
+                modal: true,  //是否模态（操作时即锁屏），默认为true，4.5版本支持非模态（即：false)  
+                success: function (res) {  //调用成功时执行的回调函数  
+                    var Curlat = parseFloat(res.lat);  //纬度，浮点数，范围为90 ~ -90  
+                    var Curlng = parseFloat(res.lng);  //经度，浮点数，范围为180 ~ -180      
+                    var code = res.code;    //状态值，1：成功，0：失败
+                    //alert("LocationInfo:" + res.lat + "," + res.lng);
+                    var Flatitude  = parseFloat($("#lbl_latitude").text().toString());
+                    var Flongitude = parseFloat($("#lbl_longitude").text().toString());
+                    if (Math.abs(Curlat - Flatitude) <= 0.000139 && Math.abs(Curlng - Flongitude) <= 0.000139) {
+                        OnsubMit();
+                        return true;
+                    }
+                    else {
+                        alert("vị trí bạn đứng không phù hợp với vị trí tuần tra vui lòng đến đúng vị trí cần tuần tra");
+                        OnsubMit();
+                        return true;
+                    }
+                },
+                error: function(error) {
+                    alert("vui lòng bật cho phép chạy javascript trong phần cài đặt hoặc bật định vị để thao tác!");
+                    return false;
+                }
+
+                });
+
+            /*}
+            else {
+                OnsubMit();
+                return true;
+            }*/
+            
+
+        });
+        
+        $("#btn_testLocation").click(function() {
+            var LocationIDstr = $("#LocationID").text();
+            cm.getGPS({
+                modal: true,  //是否模态（操作时即锁屏），默认为true，4.5版本支持非模态（即：false)  
+                success: function(res) {  //调用成功时执行的回调函数  
+                    var Curlat = parseFloat(res.lat);  //纬度，浮点数，范围为90 ~ -90  
+                    var Curlng = parseFloat(res.lng);  //经度，浮点数，范围为180 ~ -180      
+                    var code = res.code;    //状态值，1：成功，0：失败
+                    var Flatitude = parseFloat($("#lbl_latitude").text().toString());
+                    var Flongitude = parseFloat($("#lbl_longitude").text().toString());
+                    /*if (Math.abs(Curlat - Flatitude) <= 0.000096 && Math.abs(Curlng - Flongitude) <= 0.000096) {
+                        alert("Phù hợp tọa độ : vĩ độ:" + res.lat.toString() + ", Kinh độ:" + res.lng.toString()+"chênh 1:"+Math.abs(Curlat - Flatitude).toString()+"chênh 2:"+Math.abs(Curlng - Flongitude).toString());
+                        return true;
+                    }
+                    else {
+                        alert("Không Phù hợp tọa độ : vĩ độ:" + res.lat.toString() + ", Kinh độ:" + res.lng.toString()+"chênh 1:"+Math.abs(Curlat - Flatitude).toString()+"chênh 2:"+Math.abs(Curlng - Flongitude).toString());
+                        return false;
+                    }*/
+
+                    var parameter = {
+                    LocationID: LocationIDstr,
+                    Latitude: Curlat,
+                    Longitude: Curlng
+                }
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'text',
+                    url: '/OndutySignEmpAttw114/UpdateLocation',
+                    data:parameter,
+                    success: function(daa) {
+                        //alert('Complete name: '+ daa['StatusContent']);
+                        location.href = $("#RedirectToSuccess").val();
+                    },
+                    error: function(daa,status,exception) {
+                        alert('An error occurred uploading data exception:'+ex);
+                    }
+                });
+
+                }
+                });
+
+
+        });
+
+        $('#btn_test').click(function() {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/OndutySignEmpAttw114/TestController',
+                /* data:{"name" : $("#txt_name").val }, */
+                success: function(daa) {
+                    alert('Complete name: '+ daa[0]['name']);
+                },
+                error: function() {
+                    alert('An error occurred uploading data.');
+                }
+            });
+        });
+        
+        /*$('#button1').click(function() {
+            var code_i = $('#Code03').text();
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/OndutySignEmpAttw114/TestSaveCode',
+                data:{"code" : code_i },
+                success: function(daa) {
+                    alert('Complete name: '+ daa[0]['name']);
+                },
+                error: function() {
+                    alert('An error occurred uploading data.');
+                }
+            });
+        });*/
+        
+        /*$('#button2').click(function() {
+            var code_i = $('#Code02').text();
+            var parameter = {
+                code: codeForIcvet,
+                appid: "A36PAwlql7vvuGDueqKSMw2"
+            }
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                url: 'http://civetInterface.foxconn.com/open/get_user_info_bycode',
+                data: JSON.stringify(parameter),
+                success: function(daa1) {
+                    if (daa1['nickname'] != null) {
+                        alert('Complete name: '+ daa1['nickname']);
+                    }
+                    if (daa1['exception_code'] != null) {
+                        alert('Exceptsion: ' + daa1['exception_code']);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred uploading data.');
+                }
+            });
+        });
+        */
+        
+
+    </script>
+</body>
+</html>

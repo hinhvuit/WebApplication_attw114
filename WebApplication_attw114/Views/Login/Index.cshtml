@@ -1,0 +1,94 @@
+﻿@model WebApplication_attw114.Models.UserForLogin
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style type="text/css">
+        .login {
+            min-height: 100vh;
+        }
+
+        .bg-image {
+            background-image: url('../Images/jony-Image2-1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-heading {
+            font-weight: 300;
+        }
+
+        .btn-login {
+            font-size: 0.9rem;
+            letter-spacing: 0.05rem;
+            padding: 0.75rem 1rem;
+        }
+    </style>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script type="text/javascript" src="~/js/authen.js"></script>
+    <script type="text/javascript">
+        myFunction();
+    </script>
+</head>
+<body>
+    <div class="container-fluid ps-md-0">
+        <div class="row g-0">
+            <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+            <div class="col-md-8 col-lg-6">
+                <div class="login d-flex align-items-center py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-9 col-lg-8 mx-auto">
+                                <h3 class="login-heading mb-4">Welcome to 114 manager</h3>
+
+                                <!-- Sign In Form -->
+                                <form action="Login/Index" method="post">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingInput" name="EmpNo" placeholder="EmployeeID">
+                                        <label for="floatingInput">EmployeeID</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control" id="floatingPassword" name="Password" placeholder="Password">
+                                        <label for="floatingPassword">Password</label>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" name="Remembpass" id="rememberPasswordCheck">
+                                        <label class="form-check-label" for="rememberPasswordCheck">
+                                            Remember password
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="text" value="" name="recapcha" id="input_captcha">
+                                        <span class="text-right text-success" id="span_captcha">
+                                            <h3 id="kq_input_1"></h3>
+                                        </span>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" name="submit" type="submit">LOG-IN</button>
+                                        <div class="text-center">
+                                            <a class="small" href="#">Login with Smart Office</a>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

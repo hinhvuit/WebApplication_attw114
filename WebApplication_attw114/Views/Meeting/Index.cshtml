@@ -1,0 +1,220 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>@ViewBag.Name</title>
+    <style>
+        html {
+            background: url(../images/LoginBG.jpg) no-repeat center center fixed;
+            background-size: cover;
+            height: 100%;
+            overflow: hidden;
+            color: white;
+        }
+
+        h1, h3 {
+            text-align: center;
+        }
+
+        .container {
+            float: left;
+            width: 100%;
+        }
+
+        .content {
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        .main {
+            float: left;
+            width: 100%;
+        }
+
+        .table {
+            width: 100%;
+            min-height:65%;
+        }
+
+        .box-left {
+            text-align: center;
+            float: left;
+            width:100%;
+        }
+
+        .timeBox {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            font-size: 3em;
+            line-height: 1em;
+            font-weight: bold;
+        }
+
+        .box-right {
+        }
+
+        .box {
+            
+        }
+
+        .title-box {
+            position: absolute;
+            left: 40%;
+            top: 0px;
+            width: 20%;
+            background-color: #3366ff;
+            background-image: linear-gradient(to right, #0099ff,#3366ff)
+        }
+
+        .title-box h3 {
+                padding: 3% 0;
+                margin:0px;
+            }
+
+        .content-p {
+            float: left;
+            width: 100%;
+            margin: 8% 0;
+        }
+
+        .content-p span {
+                padding: 10px 40px;
+                background-image: linear-gradient(to right, #0099ff,#3366ff);
+                background-color: #3366ff;
+                border-radius: 25px;
+        }
+
+        .image-qr {
+            float: left;
+            width: 100%;
+        }
+
+        .image-qr img{
+            width:80%;
+        }
+
+        .table-main {
+            width: 90%;
+            margin: 0 auto;
+            color:black;
+        }
+
+        .table-main tr td{
+            width:24%;
+            padding:15px 0;
+        }
+        .main-login{
+            margin-top:40px;
+        }
+
+        .tit{
+            margin:0;
+            font-size:4em;
+            margin-top:90px;
+            margin-bottom:15px;
+        }
+
+        .des{
+            margin:0;
+            font-size:1.3em;
+            margin-bottom:60px;
+        }
+    </style>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/civetjs.js"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container">
+            <h1 class="tit">@ViewBag.Name</h1>
+            <h3 class="des">@ViewBag.TimeStart</h3>
+            <div class="content">
+                <section class="main">
+                    <table class="table">
+                        <tr>
+                            <td style="width:33.33%;border: 3px solid #3DBCF9; border-radius: 20px;">
+                                <div class="box box-left" id="leftdiv">
+                                    <div class="timeBox">
+                                        <time class="time" id="nowTime"></time>
+                                    </div>
+                                    <div class="image-qr">
+                                        <img alt="@ViewBag.Name" src="@ViewBag.QRImage" />
+                                    </div>
+                                    <div class="content-p">
+                                        <span>扫码签到</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width:66.67%; background-color:white;border-radius:20px; position:relative; vertical-align:top;">
+                                <div class="title-box">
+                                    <h3>已签到:<span id="countpeo"></span> 人</h3>
+                                </div>
+                                <div class="main-login">
+                                    <table class="table-main">
+                                        <tbody id="bodyApp"></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+            </div>
+        </div>
+        <asp:HiddenField runat="server" ID="hid_ID" />
+        <asp:HiddenField runat="server" ID="hid_Type" />
+        <script type="text/javascript">
+            setInterval("document.getElementById('nowTime').innerHTML = new Date().toLocaleString();", 1000);
+            setInterval("GetList();", 1000);
+            function GetList() {
+                var parameter = {
+                    ID: @ViewBag.Id,
+                    Type: @ViewBag.Type
+                };
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(parameter),
+                    url: '/Meeting/UserCivetLoginRecord_GetList',
+                    success: function (dataOut) {
+                        jQuery('#bodyApp').empty();
+                        var html = '';
+                        jQuery.each(dataOut, function (index, itemData) {
+
+                            html += '<tr>';
+
+                            html += '<td>' + itemData.ExtInfor + '</td>';
+                            html += '<td>' + itemData.EmpName + '</td>';
+                            html += '<td>签到成功</td>';
+                            html += '<td>' + itemData.TimeSign + '</td>';
+                            html += '</tr>';
+
+                        });
+                        jQuery('#bodyApp').append(html);
+                    }
+                });
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(parameter),
+                    url: '/Meeting/UserCivetLoginRecord_GetAllCount',
+                    success: function (dataOut) {
+                        jQuery('#countpeo').empty();
+                        var html = '';
+                        jQuery.each(dataOut, function (index, itemData) {
+
+                            html += itemData.Total;
+
+                        });
+                        jQuery('#countpeo').append(html);
+                    }
+                });
+            };
+        </script>
+    </form>
+</body>
+</html>

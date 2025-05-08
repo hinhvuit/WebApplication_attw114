@@ -1,0 +1,204 @@
+﻿@using Syncfusion.EJ2
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index</title>
+    <style type="text/css">
+        .FormOutWidth
+        {
+            width:1200px;
+            text-align:center;
+            border:solid 1px red;
+            margin: 0 auto;
+        }
+
+        .widthInput1{
+            width:120px;
+        }
+        .error{
+            color:red;
+        }
+
+    </style>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/js/bootstrap.js" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <SCRIPT src="http://civetinterface.foxconn.com/Scripts/CivetJsSDK-latest.min.js?V2017.12.09.16.48"></SCRIPT>
+</head>
+<body>
+
+    <div class="FormOutWidth container">
+        cvxvxzvzxc
+        
+    </div>
+    <div class="FormOutWidth container">
+        <form action="Test/?handler=OnPostUploadAsync" enctype="multipart/form-data" method="post">
+            <table>
+                <tr>
+                    <td>
+                        <label>FileUpload:</label>
+                    </td>
+                    <td>
+                        <input type="file" accept=".jpg,.png,.jpeg" id="InputImage" />
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Upload" style="width:100px" id="btn_Upload" />
+        </form>
+        <div style="margin-top:15px">
+            <output name="result"></output>
+        </div>
+    </div>
+    <div class="FormOutWidth">
+        <form action="PostModel" method="post" id="form1" name="form1">
+            <table>
+                <tr>
+                    <td>
+                        <label>ID</label>
+                    </td>
+                    <td>
+                        <label id="lbl_ID"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Sdt</label>
+                    </td>
+                    <td>
+                        <input class="widthInput1" type="text" id="sdt" name="sdt" data-msg="Please enter your sdt"  />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Mathe</label>
+                    </td>
+                    <td>
+                        <input class="widthInput1" name="Mathe" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Thoigian</label>
+                    </td>
+                    <td>
+                        <input class="widthInput1" name="Thoigian" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Thoigian</label>
+                    </td>
+                    <td>
+                        <input class="widthInput1" name="Diachi" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Ghi chu</label>
+                    </td>
+                    <td>
+                        <input class="widthInput1" name="Memo" />
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Add*" name="btn_submit" id="btn_submit" />
+        </form>
+    </div>
+    <div>
+        <input type="button" value="Click testICvet" name="btn_icvetTest" onsubmit="return validate1()" id ="btn_icvetTest" />
+    </div>
+    <div id="showAddr">
+
+    </div>
+    <label>@ViewBag.testPossition</label>
+    <script type="text/javascript">
+    
+    $('#btn_icvetTest').click(function() {
+        var useCivet = cm.useCivet;  
+        if(useCivet == true)   
+        {  
+            alert("Bạn đang sử dụng icvet。");
+            /*cm.getLocation({  
+            showmap: false,
+            success: function (res) {  //调用成功时执行的回调函数  
+                var latitude = res.latitude;  //纬度，浮点数，范围为90 ~ -90  
+                var longitude = res.longitude;  //经度，浮点数，范围为180 ~ -180  
+                
+                alert("LocationInfo:" + res.latitude + "," + res.longitude);
+                }
+            });
+            */
+           cm.getGPS({  
+                modal: true,  //是否模态（操作时即锁屏），默认为true，4.5版本支持非模态（即：false)  
+                success: function (res) {  //调用成功时执行的回调函数  
+                    var lat = res.lat;  //纬度，浮点数，范围为90 ~ -90  
+                    var lng = res.lng;  //经度，浮点数，范围为180 ~ -180      
+                    var code = res.code;    //状态值，1：成功，0：失败
+                    alert("LocationInfo:" + res.lat + "," + res.lng);
+                }
+            });
+            //getLocation();
+
+        } 
+        else  
+        {  
+            alert("Bạn không sử dụng icvet 。");  
+        }
+    });
+
+    function getLocation() {
+            cm.getLocation({
+                success: function (res) {
+                    document.getElementById("showAddr").innerHTML="kinh độ：" + res.longitude + "，vĩ độ：" + res.latitude + "，地址：" + res.address + "，位置：" + res.name;
+                }
+            });
+        }
+
+    function test() {
+        alert("this is test function");
+        return false;
+    }
+
+
+    $('#btn_submit').click(function() {
+        if ($("#sdt").val() == "" || $("#sdt").val() == null) {
+            alert("You must enter sdt!");
+            return false;
+        }
+        else {
+            return true;
+        }
+            
+            
+    });
+
+/*$("#form1").validate({
+    rules: {
+        sdt: "required",
+        Diachi: "required email",
+    },
+    messages: {
+        sdt: "Enter your First Name",
+        Diachi: {
+            required: "Enter your dIA CHI",
+            Diachi: "Please enter a valid address.",
+        }
+    }
+});*/
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+﻿﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<html>
+    <head>
+    <title>@ViewBag.Name</title>
+    <meta name="viewport" content="width=device-width" />
+    <style type="text/css">
+        h2{
+            text-align:center;
+        }
+        #otherarea{
+            display:none;
+        }
+        .active#otherarea {
+            display: block;
+        }
+    </style>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/civetjs.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <main class="mian-content">
+                <h2>@ViewBag.Name</h2>
+                <div class="main-form">
+                    <div class="form-group">
+                    <label for="empno">工號 Mã Thẻ:</label>
+                        <input type="text" class="form-control" placeholder="工號 Mã Thẻ" id="empno">
+                    </div>
+                    <div class="form-group">
+                    <label for="empname">姓名 Họ Tên:</label>
+                    <input type="text" class="form-control" placeholder="姓名 Họ Tên" id="empname">
+                    </div>
+                    <div class="form-group">
+                    <label for="bgname">事業處 Bộ Phận:</label>
+                    <input type="text" class="form-control" placeholder="事業處 Bộ Phận" id="bgname">
+                    </div>
+                    <div class="form-group">
+                    <label for="extinfor">廠區 Nhà Xưởng:</label>
+                    <select name="drdArea" id="extinfor" class="form-control">
+                        <option selected="selected" value="0">-----</option>
+	                    <option value="3">QV桂武</option>
+	                    <option value="35">VT雲中</option>
+	                    <option value="99">DV黃田</option>
+	                    <option value="101">QC光州P區</option>
+	                    <option value="106">大同建漢 dai dong hoan son</option>
+	                    <option value="5">QC光州F區</option>
+	                    <option value="8">QC光州M區</option>
+	                    <option value="9">QC光州S區</option>
+	                    <option value="10">安勇YD</option>
+	                    <option value="11">QC光州I區</option>
+	                    <option value="12">FuShan</option>
+	                    <option value="13">VT1雲中一</option>
+	                    <option value="14">VT2A雲中二</option>
+	                    <option value="15">VT2B雲中二</option>
+                        <option value="16">HP-BG和富-北江</option>
+                        <option value="17">Dong Mai東梅</option>
+                        <option value="18">Khac其他</option>
+                    </select>
+                    </div>
+                    <div class="form-group" style="margin:5px 0;">
+                        <input type="text" class="form-control" id="otherarea" placeholder="廠區 Nhà Xưởng" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btn-Submit">Submit</button>
+                </div>
+            </main>
+        </div>
+    @Html.Hidden("RedirectToSuccess", Url.Action("Sign", "Success"));
+    
+        <script type="text/javascript">
+        $("#extinfor").change(function(){
+            var exin = $("#extinfor option:selected").text();
+            if (exin == "Khac其他") {
+                $("#otherarea").addClass("active");
+            } else {
+                $("#otherarea").removeClass("active");
+            }
+        });
+        $('#btn-Submit').click(function () {
+            if(CheckData()){
+                var RederectUrl = $("#RedirectToSuccess").val();
+                var emno = $('#empno').val();
+                var emname = $('#empname').val();
+                var bname = $('#bgname').val();
+                var exin = $("#extinfor option:selected").text();
+                if (exin == "Khac其他"){
+                    exin = $('#otherarea').val();
+                }
+                //alert(emno+emname+bname+exin);
+                var id=@ViewBag.Id;
+                var type = @ViewBag.Type;
+                var parameter={
+                    ID: id,
+                    Type: type,
+                    EmpNo: emno,
+                    EmpName: emname,
+                    BGName: bname,
+                    ExtInfor: exin
+                };
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'text',
+                    url: '/Meeting/MeetSign',
+                    data: parameter,
+                    success: function (daa) {
+                        //alert('Complete name: '+ daa['StatusContent']);
+                        location.href = RederectUrl;
+                    },
+                    error: function (daa, status, exception) {
+                        alert('An error occurred uploading data exception:' + ex);
+                    }
+                });
+            }
+        });
+        function CheckData(){
+            if ($('#empno').val()==''){
+                alert('Not Empty!');
+                $('#empno').focus();
+                return false;
+            }
+            if ($('#empname').val() == '') {
+                alert('Not Empty!');
+                $('#empname').focus();
+                return false;
+            }
+            if ($('#bgname').val() == '') {
+                alert('Not Empty!');
+                $('#bgname').focus();
+                return false;
+            }
+            if ($("#extinfor option:selected").text() == '-----') {
+                alert('Please Select!');
+                $('#extinfor').focus();
+                return false;
+            }
+            if ($("#extinfor option:selected").text() == 'Khac其他'&&$('#otherarea').val() == '') {
+                alert('Not Empty!');
+                $('#otherarea').focus();
+                return false;
+            }
+            return true;
+        };
+        </script>
+    </body>
+</html>
