@@ -1,0 +1,218 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi Tiết Biểu Tuần Tra</title>
+    <link href="~/lib/bootstrap5/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery.min.js"></script>
+    <script src="~/lib/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .content .table {
+            margin-bottom: 0px;
+        }
+
+        .content h1 {
+            text-align: center;
+        }
+
+        .content {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-3 content">
+        <h1>@ViewBag.TypePatrolName</h1>
+
+        <table class="table table-bordered">
+            <tr><th colspan="4">I. Thông Tin Người Tuần Tra</th></tr>
+            <tr>
+                <td>Mã Thẻ:</td>
+                <td><span style="color:dodgerblue">@ViewBag.EmpNo</span></td>
+                <td>Họ Tên:</td>
+                <td><span style="color:dodgerblue">@ViewBag.EmpName</span></td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered">
+            <tr><th colspan="4">II. Thông Tin Tuần Tra</th></tr>
+            <tr><td>Nhà Xưởng:</td><td colspan="3">@ViewBag.AreaName</td></tr>
+            <tr>
+                <td>Ngày Tuần Tra:</td>
+                <td><span style="color:dodgerblue">@ViewBag.DatePatrol</span></td>
+                <td>Khung Giờ Tuần Tra:</td>
+                <td><span style="color:dodgerblue">@ViewBag.FrameName</span></td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered">
+            <tr><th>III. Bản Đồ Tuần Tra</th></tr>
+            <tr>
+                <td style="text-align:center;">
+                    <canvas id="mycanvas" width="832" height="534" style="background: url('@ViewBag.UrlImage'); background-size: cover;"></canvas>
+                </td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr><th colspan="5">IV. Lịch Sử Tuần Tra</th></tr>
+                <tr>
+                    <th>Vị Trí</th>
+                    <th>Trạng Thái Quét Mã</th>
+                    <th>Trạng Thái Điểm Quét</th>
+                    <th>Thời Gian Quét</th>
+                    <th>Chi Tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var point in ViewData["ListPoint"] as List<WebApplication_attw114.Models.PatrolFit.Response.HistorySignID>)
+                {
+                    <tr>
+                        <td>@point.NamePoint</td>
+                        <td>@(point.StatusSign == "da_ky" ? "Đã Ký" : "Chưa Ký")</td>
+                        <td>@point.StatusPlace</td>
+                        <td>@point.WorkDate</td>
+                        <td>
+                            <button type="button" class="btn btn-info btnDetail"
+                                    data-checkedid="@point.PointCheckedID" data-pointid="@point.PointID">
+                                Chi Tiết
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Điểm Tuần Tra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body" id="modalDetailBody">
+                    <div class="text-center">
+                        <span class="spinner-border"></span> Đang tải dữ liệu...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        const idrecord = @ViewBag.ID;
+
+        const listPoint = [
+        @foreach (var p in ViewData["ListPoint"] as List<WebApplication_attw114.Models.PatrolFit.Response.HistorySignID>)
+        {
+            <text>
+                    {
+                        x: @p.X,
+                        y: @p.Y,
+                        color: "@p.StatusSign".toLowerCase().trim() === "da_ky" ? "#00FF00" : "#FF0000",
+                        checkedId: @p.PointCheckedID,
+                        pointId: @p.PointID
+                    },
+            </text>
+        }
+        ];
+
+        function showDetailModal(checkedId, pointId) {
+            const url = `/OndutyFit/getrulechecked?idrecord=${idrecord}&pointid=${pointId}`;
+
+            $('#modalDetailBody').html('<div class="text-center"><span class="spinner-border"></span> Đang tải dữ liệu...</div>');
+            $('#modalDetail').modal('show');
+
+            $.getJSON(url, function (data) {
+                let html = `
+                    <h5>Thông Tin Điểm Tuần Tra</h5>
+                    <table class="table table-bordered mb-4">
+                        <tr><th>Tên Điểm Ký</th><td>${data.namePoint}</td></tr>
+                        <tr><th>Trạng Thái</th><td>
+                            ${data.statusSign?.toLowerCase() === "da_ky"
+                                ? '<span class="badge bg-success">Đã Ký</span>'
+                                : '<span class="badge bg-danger">Chưa Ký</span>'}
+                        </td></tr>
+                        <tr><th>Thời Gian Ký</th><td>${data.signTime || ''}</td></tr>
+                    </table>
+                    <h5>Các Hạng Mục Kiểm Tra</h5>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr><th>STT</th><th>Hạng Mục Kiểm Tra</th><th>Đánh Giá</th><th>Ghi Chú</th></tr>
+                        </thead>
+                        <tbody>`;
+
+                if (data.listPointDetail?.length > 0) {
+                    data.listPointDetail.forEach((item, index) => {
+                        html += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${item.ruleName}</td>
+                                <td>${
+                                    checkedId == -1
+                                        ? ''
+                                        : (item.isOk ? '<span class="text-success">Đạt</span>' : '<span class="text-danger">Không Đạt</span>')
+                                }</td>
+                                <td>${item.memo || ''}</td>
+                            </tr>`;
+                    });
+                } else {
+                    html += `<tr><td colspan="4" class="text-center text-muted">Không có dữ liệu kiểm tra</td></tr>`;
+                }
+
+                html += '</tbody></table>';
+                $('#modalDetailBody').html(html);
+            }).fail(function () {
+                $('#modalDetailBody').html('<div class="alert alert-danger">Không thể tải dữ liệu.</div>');
+            });
+        }
+
+        window.onload = function () {
+            const canvas = document.getElementById("mycanvas");
+            const context = canvas.getContext("2d");
+
+            // Vẽ các điểm
+            listPoint.forEach(p => {
+                context.beginPath();
+                context.fillStyle = p.color;
+                context.strokeStyle = p.color;
+                context.lineWidth = 2;
+                context.arc(p.x, p.y, 12, 0, 2 * Math.PI);
+                context.fill();
+                context.stroke();
+            });
+
+            // Bắt sự kiện click vào điểm
+            canvas.addEventListener("click", function (e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                listPoint.forEach(p => {
+                    const dx = clickX - p.x;
+                    const dy = clickY - p.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance <= 12) {
+                        showDetailModal(p.checkedId, p.pointId);
+                    }
+                });
+            });
+
+        };
+
+        $(document).on('click', '.btnDetail', function () {
+            const checkedId = $(this).data('checkedid');
+            const pointId = $(this).data('pointid');
+            showDetailModal(checkedId, pointId);
+        });
+    </script>
+</body>
+</html>

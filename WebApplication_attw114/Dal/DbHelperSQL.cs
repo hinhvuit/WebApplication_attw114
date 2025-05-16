@@ -1103,5 +1103,11 @@ namespace WebApplication_attw114.Dal
         }
 
         #endregion
+
+        public static T SafeGet<T>(SqlDataReader reader, string columnName)
+        {
+            var value = reader[columnName];
+            return value != DBNull.Value ? (T)value : default;
+        }
     }
 }
