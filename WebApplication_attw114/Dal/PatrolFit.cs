@@ -178,6 +178,8 @@ namespace WebApplication_attw114.Dal
                         result.FullName = DbHelperSQL.SafeGet<string>(reader, "FullName");
                         result.AreaID = DbHelperSQL.SafeGet<int>(reader, "AreaID");
                         result.UrlImage = DbHelperSQL.SafeGet<string>(reader, "UrlImage");
+                        result.Lati = DbHelperSQL.SafeGet<float>(reader, "Latitude");
+                        result.Longti = DbHelperSQL.SafeGet<float>(reader, "Longtitude");
                     }
                 }
             }
@@ -204,12 +206,26 @@ namespace WebApplication_attw114.Dal
                 cn.Close();
             }
         }
+        public void Update_PatrolPointlatilongti(Models.PatrolFit.DTO.PointUpdateDTO updateDTO)
+        {
+            using (SqlConnection cn = new SqlConnection(strconn))
+            {
+                SqlCommand cmd = new SqlCommand("UP_PatrolPoint_UpdateLatilongti", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@CodePoint", SqlDbType.VarChar, 20).Value = updateDTO.CodePoint;
+                cmd.Parameters.Add("@Lati", SqlDbType.Float).Value = updateDTO.Lati;
+                cmd.Parameters.Add("@Longti", SqlDbType.Float).Value = updateDTO.Longti;
+                cn.Open();
+                cmd.ExecuteNonQuery();
+                cn.Close();
+            }
+        }
         /// <summary>
         /// Ký Tuần Tra
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public int PatrolSign(Models.PatrolFit.DTO.PatrolSignDTO model)
+        public int PatrolSignOld(Models.PatrolFit.DTO.PatrolSignDTO model)
         {
             int Retval = 0;
             using (SqlConnection cn = new SqlConnection(strconn))
@@ -220,6 +236,32 @@ namespace WebApplication_attw114.Dal
                 cmd.Parameters.Add("@EmpNo", SqlDbType.VarChar, 20).Value = model.EmpNo;
                 cmd.Parameters.Add("@EmpName", SqlDbType.NVarChar, 50).Value = model.EmpName;
                 cmd.Parameters.Add("@TypePatrol", SqlDbType.Int).Value = model.TypePatrol;
+                cmd.Parameters.Add("@Reval", SqlDbType.Int).Direction = ParameterDirection.Output;
+                cn.Open();
+                cmd.ExecuteNonQuery();
+                Retval = Convert.ToInt32(cmd.Parameters["@Reval"].Value.ToString());
+                cn.Close();
+            }
+            return Retval;
+        }
+        /// <summary>
+        /// Ký Tuần Tra
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public int PatrolSign(Models.PatrolFit.DTO.PatrolSignDTO model)
+        {
+            int Retval = 0;
+            using (SqlConnection cn = new SqlConnection(strconn))
+            {
+                SqlCommand cmd = new SqlCommand("UP_PatrolRecord_SignUD", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@Code_Point", SqlDbType.VarChar, 20).Value = model.code_Point;
+                cmd.Parameters.Add("@EmpNo", SqlDbType.VarChar, 20).Value = model.EmpNo;
+                cmd.Parameters.Add("@EmpName", SqlDbType.NVarChar, 50).Value = model.EmpName;
+                cmd.Parameters.Add("@TypePatrol", SqlDbType.Int).Value = model.TypePatrol;
+                cmd.Parameters.Add("@Lati", SqlDbType.Float).Value = model.Lati;
+                cmd.Parameters.Add("@Longti", SqlDbType.Float).Value = model.Longti;
                 cmd.Parameters.Add("@Reval", SqlDbType.Int).Direction = ParameterDirection.Output;
                 cn.Open();
                 cmd.ExecuteNonQuery();
@@ -320,6 +362,12 @@ namespace WebApplication_attw114.Dal
 
             return result;
         }
+        /// <summary>
+        /// Lấy thông tin chi tiết của điểm kiểm tra theo ID bản ghi và ID điểm
+        /// </summary>
+        /// <param name="idrecord"></param>
+        /// <param name="pointid"></param>
+        /// <returns></returns>
         public PointDetailViewModel GetPointDetailViewModel(int idrecord, int pointid)
         {
             // Lấy danh sách tiêu chuẩn đã kiểm tra trước
@@ -354,7 +402,13 @@ namespace WebApplication_attw114.Dal
 
             return null;
         }
-
+        /// <summary>
+        /// Lấy danh sách các tiêu chuẩn đã kiểm tra của điểm kiểm tra theo ID điểm, ID bản ghi và loại tuần tra
+        /// </summary>
+        /// <param name="idcheckedpoint"></param>
+        /// <param name="pointid"></param>
+        /// <param name="typepatrol"></param>
+        /// <returns></returns>
         public List<PointDetailRule> GetPointCheckedRule(int idcheckedpoint, int pointid, int typepatrol)
         {
             var result = new List<PointDetailRule>();
@@ -384,6 +438,12 @@ namespace WebApplication_attw114.Dal
 
             return result;
         }
+        /// <summary>
+        /// Lấy danh sách các tiêu chuẩn đã kiểm tra của điểm kiểm tra theo ID bản ghi và ID điểm
+        /// </summary>
+        /// <param name="idrecord"></param>
+        /// <param name="pointid"></param>
+        /// <returns></returns>
         public List<PointDetailRule> PatrolPointCheckedResult_GetByIDReCordAndPointID(int idrecord, int pointid)
         {
             var result = new List<PointDetailRule>();

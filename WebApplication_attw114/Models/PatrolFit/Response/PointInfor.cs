@@ -7,5 +7,7 @@
         public string FullName { get; set; }
         public int AreaID { get; set; }
         public string UrlImage { get; set; }
+        public float Lati { get; set; }
+        public float Longti { get; set; }
     }
 }

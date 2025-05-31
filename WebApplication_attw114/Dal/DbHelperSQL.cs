@@ -1106,8 +1106,24 @@ namespace WebApplication_attw114.Dal
 
         public static T SafeGet<T>(SqlDataReader reader, string columnName)
         {
-            var value = reader[columnName];
-            return value != DBNull.Value ? (T)value : default;
+            int colIndex = reader.GetOrdinal(columnName);
+            if (reader.IsDBNull(colIndex)) return default;
+
+            object value = reader.GetValue(colIndex);
+
+            // Handle nullable types
+            Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+
+            if (value is T)
+                return (T)value;
+
+            // Special handling for float (Single) from double
+            if (targetType == typeof(float) && value is double d)
+                return (T)(object)(float)d;
+
+            // General conversion
+            return (T)Convert.ChangeType(value, targetType);
         }
+
     }
 }

@@ -8,21 +8,88 @@ namespace WebApplication_attw114.Controllers
 {
     public class OndutyFitController : Controller
     {
-        public IActionResult Index()
+        public RedirectResult Index()
         {
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["LocationID"]))
-            { 
+            {
+                string lat = HttpContext.Request.Query["LocationID"];
+                string uria = @"https://attw.foxconn.com.vn/Ondutyfit.html?Loca=" + lat;
+                return Redirect(uria);
+            }
+            else
+            {
+                return Redirect("#");
+            }
+        }
+        public IActionResult OndutyFit()
+        {
+            return View();
+        }
+        public IActionResult ErrorLocation()
+        {
+            ViewBag.Error = "1";
+            ViewBag.Message = "Vui lòng chọn vị trí tuần tra trước khi thực hiện thao tác này.";
+            return View();
+        }
+        public IActionResult Tuantra()
+        {
+            if (!String.IsNullOrEmpty(HttpContext.Request.Query["LocationID"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["lati"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["longti"]))
+            {
                 ViewBag.LocationID = HttpContext.Request.Query["LocationID"];
                 Models.PatrolFit.Response.PointInfor pointInfor = new Dal.PatrolFit().GetPointInfor(HttpContext.Request.Query["LocationID"]);
                 ViewBag.Name = pointInfor.Name;
                 ViewBag.FullName = pointInfor.FullName;
                 ViewBag.AreaID = pointInfor.AreaID;
                 ViewBag.UrlImage = pointInfor.UrlImage;
+                ViewBag.LongtiNew = HttpContext.Request.Query["longti"];
+                ViewBag.LatiNew = HttpContext.Request.Query["lati"];
+
+                if (pointInfor.Lati != null && pointInfor.Lati != 0)
+                {
+                    ViewBag.Lati = pointInfor.Lati;
+                }
+                else
+                {
+                    ViewBag.Lati = "0";
+                }
+                if (pointInfor.Longti != null && pointInfor.Longti != 0)
+                {
+                    ViewBag.Longti = pointInfor.Longti;
+                }
+                else
+                {
+                    ViewBag.Longti = "0";
+                }
+                if (pointInfor.Lati != null && pointInfor.Lati != 0 && pointInfor.Longti != null && pointInfor.Longti != 0)
+                {
+                    Helper.GeoHelper geoHelper = new Helper.GeoHelper();
+                    double lati = Convert.ToDouble(pointInfor.Lati);
+                    double longti = Convert.ToDouble(pointInfor.Longti);
+                    double latiNew = Convert.ToDouble(HttpContext.Request.Query["lati"]);
+                    double longtiNew = Convert.ToDouble(HttpContext.Request.Query["longti"]);
+                    double distance = geoHelper.CalculateDistance(lati, longti, latiNew, longtiNew);
+                    if (distance > 70)
+                    {
+                        ViewBag.Distance = "Vượt quá phạm vi tuần tra, bạn không thể tuần tra tại đây";
+                        ViewBag.Error = "1";
+                    }
+                    else
+                    {
+                        ViewBag.Distance = "Khoảng cách từ vị trí tuần tra đến điểm tuần tra là: " + distance.ToString("0.00") + "m";
+                        ViewBag.Error = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.Distance = "";
+                    ViewBag.Error = "";
+
+                }
             }
-            return View();
-        }
-        public IActionResult OndutyFit()
-        {
+            else
+            {
+                ViewBag.LocationID = "0";
+            }
             return View();
         }
         public IActionResult Detail()
@@ -101,6 +168,8 @@ namespace WebApplication_attw114.Controllers
             signDTO.code_Point = saveDTO.CodePoint;
             signDTO.EmpNo = saveDTO.EmpNo;
             signDTO.EmpName = saveDTO.EmpName;
+            signDTO.Lati = saveDTO.Lati;
+            signDTO.Longti = saveDTO.Longti;
             int idapp=patrol.PatrolSign(signDTO);
             foreach (var rule in saveDTO.ListChecked)
             {
@@ -114,6 +183,20 @@ namespace WebApplication_attw114.Controllers
             }
             return Ok(new { Message = "Rules processed successfully" });
         }
+        [HttpPost]
+        public IActionResult UpdateLocation([FromBody] Models.PatrolFit.DTO.PointUpdateDTO updateDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var patrol = new Dal.PatrolFit();
+            patrol.Update_PatrolPointlatilongti(updateDTO);
+
+            return Ok(new { Message = "Location updated successfully" });
+        }
+
 
     }
 }
