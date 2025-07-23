@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using WebApplication_attw114.Models.PatrolFit.Response;
 using WebApplication_attw114.Models;
 using System.Linq;
+using WebApplication_attw114.Models.PatrolFit.DTO;
 
 namespace WebApplication_attw114.Dal
 {
@@ -92,11 +93,11 @@ namespace WebApplication_attw114.Dal
         /// </summary>
         /// <param name="nowDTO"></param>
         /// <returns></returns>
-        public Models.PatrolFit.Response.HistorySignNowList PatrolPoint_GetHistory(Models.PatrolFit.DTO.PatrolGetNowDTO nowDTO)
+        public HistorySignNowList PatrolPoint_GetHistory(Models.PatrolFit.DTO.PatrolGetNowDTO nowDTO)
         {
-            var result = new Models.PatrolFit.Response.HistorySignNowList
+            var result = new HistorySignNowList
             {
-                List = new List<Models.PatrolFit.Response.HistorySignNow>(),
+                List = new List<HistorySignNow>(),
                 Total = 0
             };
 
@@ -115,7 +116,7 @@ namespace WebApplication_attw114.Dal
                     {
                         var workDate = DbHelperSQL.SafeGet<DateTime?>(reader, "WorkDate");
 
-                        var item = new Models.PatrolFit.Response.HistorySignNow
+                        var item = new HistorySignNow
                         {
                             Id = DbHelperSQL.SafeGet<int>(reader, "ID"),
                             CodePoint = DbHelperSQL.SafeGet<string>(reader, "LocationID"),
@@ -160,9 +161,9 @@ namespace WebApplication_attw114.Dal
         /// </summary>
         /// <param name="codePoint"></param>
         /// <returns></returns>
-        public Models.PatrolFit.Response.PointInfor GetPointInfor(string codePoint)
+        public PointInfor GetPointInfor(string codePoint)
         {
-            var result = new Models.PatrolFit.Response.PointInfor();
+            var result = new PointInfor();
             using (var cn = new SqlConnection(strconn))
             using (var cmd = new SqlCommand("UP_PatrolPoint_GetInforByCode", cn))
             {
@@ -185,7 +186,32 @@ namespace WebApplication_attw114.Dal
             }
             return result;
         }
-
+        /// <summary>
+        /// get infor by userID
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public PatrolSignInforDTO GetInforByUserID(string userid)
+        {
+            var result = new PatrolSignInforDTO();
+            using (var cn = new SqlConnection(strconn))
+            using (var cmd = new SqlCommand("Up_PatrolSign_GetinforByUserID", cn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", userid ?? string.Empty);
+                cn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        result.EmpNo = DbHelperSQL.SafeGet<string>(reader, "EmpNo");
+                        result.EmpName = DbHelperSQL.SafeGet<string>(reader, "EmpName");
+                        result.UserID = userid;
+                    }
+                }
+            }
+            return result;
+        }
         /// <summary>
         /// Thêm kết quả kiểm tra cac tieu chuan
         /// </summary>
@@ -257,7 +283,7 @@ namespace WebApplication_attw114.Dal
                 SqlCommand cmd = new SqlCommand("UP_PatrolRecord_SignUD", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("@Code_Point", SqlDbType.VarChar, 20).Value = model.code_Point;
-                cmd.Parameters.Add("@EmpNo", SqlDbType.VarChar, 20).Value = model.EmpNo;
+                cmd.Parameters.Add("@EmpNo", SqlDbType.NVarChar, 50).Value = model.EmpNo;
                 cmd.Parameters.Add("@EmpName", SqlDbType.NVarChar, 50).Value = model.EmpName;
                 cmd.Parameters.Add("@TypePatrol", SqlDbType.Int).Value = model.TypePatrol;
                 cmd.Parameters.Add("@Lati", SqlDbType.Float).Value = model.Lati;

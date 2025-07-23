@@ -21,4 +21,15 @@ namespace WebApplication_attw114.Models.PatrolFit.DTO
         public float Longti { get; set; }
         public List<PatrolChecked> ListChecked { get; set; }
     }
+    public class PatrolSignInforDTO
+    {
+        public string UserID { get; set; }
+        public string EmpNo { get; set; }
+        public string EmpName { get; set; }
+    }
+    public class PatrolSignInforRq
+    {
+        public string UserID { get; set; }
+    }
+
 }

@@ -1,0 +1,311 @@
+﻿@* 
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860 
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tuần Tra Nhà Xưởng</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/lib/bootstrap5/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery.min.js"></script>
+    <script src="~/lib/bootstrap5/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: aliceblue;
+        }
+
+        .OutWidth {
+            width: 1100px;
+            position: relative;
+            background-color: aliceblue;
+            margin: 10px auto 20px;
+        }
+
+        .Textcenter {
+            text-align: center;
+        }
+
+        .OutWidth .table {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="OutWidth Textcenter">
+        <h1><label id="lbl_tit">Biểu Tuần Tra Của Nhân Viên Bảo Vệ</label></h1>
+
+        <!-- I. Thông Tin Người Tuần Tra -->
+        <table class="table table-bordered">
+            <tr><th colspan="4">I. Thông Tin Người Tuần Tra</th></tr>
+            <tr>
+                <td>Mã Thẻ</td>
+                <td><input type="text" id="txt_EmpNo" class="form-control" value="@ViewBag.EmpNo" /></td>
+                <td>Họ Tên</td>
+                <td><input type="text" id="txt_EmpName" class="form-control" value="@ViewBag.EmpName" /></td>
+            </tr>
+        </table>
+
+        <!-- II. Thông Tin Điểm Tuần Tra -->
+        <table class="table table-bordered">
+            <tr><th colspan="4">II. Thông Tin Điểm Tuần Tra</th></tr>
+            <tr>
+                <td>Nhà Xưởng</td>
+                <td><span style="color:dodgerblue">@ViewBag.FullName</span></td>
+                <td>Vị Trí</td>
+                <td><span style="color:dodgerblue">@ViewBag.Name</span></td>
+            </tr>
+            <tr>
+                <td colspan="2">Loại Hình</td>
+                <td colspan="2">Bảo Vệ Vòng Ngoài</td>
+            </tr>
+        </table>
+
+        <!-- III. Hạng Mục Kiểm Tra -->
+        <table class="table table-bordered">
+            <thead>
+                <tr><th colspan="4">III. Hạng Mục Kiểm Tra</th></tr>
+                <tr>
+                    <td>Hạng mục</td>
+                    <td>Bình Thường</td>
+                    <td>Bất Thường</td>
+                    <td>Ghi Chú</td>
+                </tr>
+            </thead>
+            <tbody id="body_rule"></tbody>
+            <tr>
+                <td colspan="4" class="text-center">
+                    <button id="btnSign" class="btn btn-primary">Xác Nhận Tuần Tra</button>
+                    <button id="btn_UpdateLocation" class="btn btn-primary">Cập Nhập Vị Trí</button>
+                </td>
+            </tr>
+        </table>
+
+        <!-- IV. Bản Đồ Tuần Tra -->
+        <table class="table table-bordered">
+            <tr><th>IV. Bản Đồ Tuần Tra</th></tr>
+            <tr>
+                <td class="text-center">
+                    <canvas id="mycanvas" width="832" height="534" style="background: url('@ViewBag.UrlImage')"></canvas>
+                </td>
+            </tr>
+        </table>
+
+        <!-- V. Lịch Sử Tuần Tra -->
+        <table class="table table-bordered" id="tblHistory">
+            <thead>
+                <tr><th colspan="5">V. Lịch Sử Tuần Tra</th></tr>
+                <tr>
+                    <th>Vị trí</th>
+                    <th>Trang thái ký duyệt</th>
+                    <th>Trạng thái điểm ký</th>
+                    <th>Ghi chú</th>
+                    <th>Thời gian tuần tra</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Hidden Inputs -->
+    @* Dữ liệu từ ViewBag *@
+    <input type="hidden" id="hid_LocationID" value="@ViewBag.LocationID" />
+    <input type="hidden" id="hid_Lati" value="@ViewBag.Lati" />
+    <input type="hidden" id="hid_Long" value="@ViewBag.Longti" />
+    <input type="hidden" id="hid_Latinew" value="@ViewBag.LatiNew" />
+    <input type="hidden" id="hid_Longtinew" value="@ViewBag.LongtiNew" />
+    <input type="hidden" id="hid_Error" value="@ViewBag.Error" />
+    <input type="hidden" id="hid_Mess" value="@ViewBag.Distance" />
+    <input type="hidden" id="hid_EmpNo" value="@ViewBag.EmpNo" />
+    <input type="hidden" id="hid_EmpName" value="@ViewBag.EmpName" />
+    <input type="hidden" id="hid_UserID" value="@ViewBag.UserID" />
+    @Html.Hidden("RedirectToSuccess", Url.Action("ErrorLocation", "OndutyFit"))
+
+    <!-- JavaScript -->
+    <script>
+        $(document).ready(function () {
+            getListTest();
+
+            var lati = $('#hid_Lati').val();
+            var longti = $('#hid_Long').val();
+            var er = $('#hid_Error').val();
+            var ms = $('#hid_Mess').val();
+            var redirectUrl = $("#RedirectToSuccess").val();
+
+            if (lati !== "0" || longti !== "0") {
+                $("#btn_UpdateLocation").hide();
+                if (er === "1") {
+                    alert(ms);
+                    location.href = redirectUrl;
+                }
+            }
+
+            $("#btn_UpdateLocation").click(function () {
+                var latiNew = $('#hid_Latinew').val();
+                var longtiNew = $('#hid_Longtinew').val();
+                var codePoint = $('#hid_LocationID').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/OndutyFit/UpdateLocation',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        codePoint: codePoint,
+                        lati: parseFloat(latiNew),
+                        longti: parseFloat(longtiNew)
+                    }),
+                    success: function (data) {
+                        alert('Cập Nhật Vị Trí Thành Công');
+                        window.close();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('UpdateLocation Error:', error);
+                        alert('Cập Nhật Vị Trí không thành công');
+                    }
+                });
+            });
+
+            $('#btnSign').click(function () {
+                var listRule = [];
+                var empNo = $('#hid_EmpNo').val();
+                var empName = $('#hid_EmpName').val();
+                var codePoint = $('#hid_LocationID').val();
+                var latiNew = $('#hid_Latinew').val();
+                var longtiNew = $('#hid_Longtinew').val();
+
+                if (!empNo || !empName || !codePoint) {
+                    alert('Vui lòng nhập đầy đủ thông tin nhân viên và vị trí.');
+                    return;
+                }
+
+                $('input[type="radio"]:checked').each(function () {
+                    var ruleID = $(this).attr('name').split('_')[1];
+                    var value = $(this).val();
+                    var memo = $('input[name="memo_' + ruleID + '"]').val();
+
+                    listRule.push({
+                        ruleID: parseInt(ruleID),
+                        isOk: value === 'OK',
+                        memo: memo || '',
+                        imageName: ''
+                    });
+                });
+
+                if (listRule.length === 0) {
+                    alert('Vui lòng chọn ít nhất một hạng mục.');
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/OndutyFit/SignPatrol',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        empNo,
+                        empName,
+                        codePoint,
+                        typePatrol: 3,
+                        lati: parseFloat(latiNew),
+                        longti: parseFloat(longtiNew),
+                        listChecked: listRule
+                    }),
+                    success: function (data) {
+                        alert('Ký thành công');
+                        getListTest();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('SignPatrol Error:', error);
+                        alert('Ký không thành công');
+                    }
+                });
+            });
+        });
+
+        function getListTest() {
+            var codepoint = $("#hid_LocationID").val();
+            var empNo = $("#hid_EmpNo").val();
+            if(empNo!="Na"){
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/OndutyFit/GetList',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ code_point: codepoint, empNo: empNo, typePatrol: 3 }),
+                    success: function (data) {
+                        renderHistory(data.list);
+                    },
+                    error: function () {
+                        alert('Lỗi khi lấy lịch sử tuần tra');
+                    }
+                });
+
+                $.ajax({
+                    url: '/OndutyFit/GetRules',
+                    type: 'GET',
+                    data: { codePoint: codepoint, typePatrol: 3 },
+                    success: function (response) {
+                        $('#body_rule').empty();
+                        $.each(response, function (index, item) {
+                            var row = `
+                                <tr>
+                                    <td>${item.ruleName}<input type="hidden" name="ruleID_${item.id}" value="${item.id}" /></td>
+                                    <td><input type="radio" name="rule_${item.id}" value="OK" checked /></td>
+                                    <td><input type="radio" name="rule_${item.id}" value="NG" /></td>
+                                    <td><input type="text" name="memo_${item.id}" class="form-control" /></td>
+                                </tr>`;
+                            $('#body_rule').append(row);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('GetRules Error:', error);
+                    }
+                });
+            }else{
+                var usid=$("#hid_UserID").val();
+                var urlredirect="http://114.foxconn.com.vn:8186/SwipesRegisterZalo?lati="+lati+"&longti="+longti+"&userid="+usid;
+			    window.location.href=urlredirect;
+            }
+        }
+
+        function renderHistory(list) {
+            var html = "";
+
+            if (!list.length) {
+                html = "<tr><td colspan='5'>Không có dữ liệu tuần tra</td></tr>";
+            } else {
+                var canvas = document.getElementById("mycanvas");
+                var ctx = canvas.getContext("2d");
+
+                list.forEach(function (item) {
+                    html += `<tr>
+                        <td>${item.namePoint}</td>
+                        <td>${item.statusSign}</td>
+                        <td>${item.statusPlace}</td>
+                        <td>${item.memo}</td>
+                        <td>${item.workDate}</td>
+                    </tr>`;
+
+                    var color = (item.statusSign === "da_ky" || item.statusSign === "Đã Ký") ? "#00FF00" : "#FF0000";
+
+                    ctx.beginPath();
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.arc(item.x, item.y, 12, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                });
+            }
+
+            $("#tblHistory tbody").html(html);
+        }
+    </script>
+</body>
+</html>

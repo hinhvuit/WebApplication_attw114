@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using WebApplication_attw114.Models.PatrolFit.DTO;
 using WebApplication_attw114.Models.PatrolFit.Response;
 
 namespace WebApplication_attw114.Controllers
@@ -14,6 +15,11 @@ namespace WebApplication_attw114.Controllers
             {
                 string lat = HttpContext.Request.Query["LocationID"];
                 string uria = @"https://attw.foxconn.com.vn/Ondutyfit.html?Loca=" + lat;
+                string lataaa=lat.ToLower();
+                if (lataaa.Contains("qci") || lataaa.Contains("qcj"))
+                {
+                    uria = @"https://attw.foxconn.com.vn/Ondutyfit.html?Loca=" + lat + "&type=atvn";
+                }
                 return Redirect(uria);
             }
             else
@@ -31,12 +37,18 @@ namespace WebApplication_attw114.Controllers
             ViewBag.Message = "Vui lòng chọn vị trí tuần tra trước khi thực hiện thao tác này.";
             return View();
         }
+        public IActionResult ErorrSign()
+        {
+            ViewBag.Error = "1";
+            ViewBag.Message = "Vui lòng chọn vị trí tuần tra trước khi thực hiện thao tác này.";
+            return View();
+        }
         public IActionResult Tuantra()
         {
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["LocationID"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["lati"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["longti"]))
             {
                 ViewBag.LocationID = HttpContext.Request.Query["LocationID"];
-                Models.PatrolFit.Response.PointInfor pointInfor = new Dal.PatrolFit().GetPointInfor(HttpContext.Request.Query["LocationID"]);
+                PointInfor pointInfor = new Dal.PatrolFit().GetPointInfor(HttpContext.Request.Query["LocationID"]);
                 ViewBag.Name = pointInfor.Name;
                 ViewBag.FullName = pointInfor.FullName;
                 ViewBag.AreaID = pointInfor.AreaID;
@@ -68,7 +80,79 @@ namespace WebApplication_attw114.Controllers
                     double latiNew = Convert.ToDouble(HttpContext.Request.Query["lati"]);
                     double longtiNew = Convert.ToDouble(HttpContext.Request.Query["longti"]);
                     double distance = geoHelper.CalculateDistance(lati, longti, latiNew, longtiNew);
-                    if (distance > 70)
+                    if (distance > 150)
+                    {
+                        ViewBag.Distance = "Vượt quá phạm vi tuần tra, bạn không thể tuần tra tại đây";
+                        ViewBag.Error = "1";
+                    }
+                    else
+                    {
+                        ViewBag.Distance = "Khoảng cách từ vị trí tuần tra đến điểm tuần tra là: " + distance.ToString("0.00") + "m";
+                        ViewBag.Error = "0";
+                    }
+                }
+                else
+                {
+                    ViewBag.Distance = "";
+                    ViewBag.Error = "";
+
+                }
+            }
+            else
+            {
+                ViewBag.LocationID = "0";
+            }
+            return View();
+        }
+        public IActionResult Securety()
+        {
+            if (!String.IsNullOrEmpty(HttpContext.Request.Query["LocationID"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["lati"]) && !String.IsNullOrEmpty(HttpContext.Request.Query["longti"])&& !String.IsNullOrEmpty(HttpContext.Request.Query["userid"]))
+            {
+                ViewBag.LocationID = HttpContext.Request.Query["LocationID"];
+                PointInfor pointInfor = new Dal.PatrolFit().GetPointInfor(HttpContext.Request.Query["LocationID"]);
+                PatrolSignInforDTO signInforDTO = new Dal.PatrolFit().GetInforByUserID(HttpContext.Request.Query["userid"]);
+                ViewBag.Name = pointInfor.Name;
+                ViewBag.FullName = pointInfor.FullName;
+                ViewBag.AreaID = pointInfor.AreaID;
+                ViewBag.UrlImage = pointInfor.UrlImage;
+                ViewBag.LongtiNew = HttpContext.Request.Query["longti"];
+                ViewBag.LatiNew = HttpContext.Request.Query["lati"];
+                ViewBag.UserID = HttpContext.Request.Query["userid"];
+                if (signInforDTO.EmpNo != null && signInforDTO.EmpName != null)
+                {
+                    ViewBag.EmpNo = signInforDTO.EmpNo;
+                    ViewBag.EmpName = signInforDTO.EmpName;
+                }
+                else
+                {
+                    ViewBag.EmpNo = "Na";
+                    ViewBag.EmpName = "Na";
+                }
+                if (pointInfor.Lati != null && pointInfor.Lati != 0)
+                {
+                    ViewBag.Lati = pointInfor.Lati;
+                }
+                else
+                {
+                    ViewBag.Lati = "0";
+                }
+                if (pointInfor.Longti != null && pointInfor.Longti != 0)
+                {
+                    ViewBag.Longti = pointInfor.Longti;
+                }
+                else
+                {
+                    ViewBag.Longti = "0";
+                }
+                if (pointInfor.Lati != null && pointInfor.Lati != 0 && pointInfor.Longti != null && pointInfor.Longti != 0)
+                {
+                    Helper.GeoHelper geoHelper = new Helper.GeoHelper();
+                    double lati = Convert.ToDouble(pointInfor.Lati);
+                    double longti = Convert.ToDouble(pointInfor.Longti);
+                    double latiNew = Convert.ToDouble(HttpContext.Request.Query["lati"]);
+                    double longtiNew = Convert.ToDouble(HttpContext.Request.Query["longti"]);
+                    double distance = geoHelper.CalculateDistance(lati, longti, latiNew, longtiNew);
+                    if (distance > 150)
                     {
                         ViewBag.Distance = "Vượt quá phạm vi tuần tra, bạn không thể tuần tra tại đây";
                         ViewBag.Error = "1";
@@ -97,7 +181,7 @@ namespace WebApplication_attw114.Controllers
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["ID"]))
             {
                 int id = Convert.ToInt32(HttpContext.Request.Query["ID"]);
-                Models.PatrolFit.Response.RecordInfor recordInfor = new Dal.PatrolFit().GetRecordInforById(id);
+                RecordInfor recordInfor = new Dal.PatrolFit().GetRecordInforById(id);
                 ViewBag.ID = id;
                 ViewBag.EmpNo = recordInfor.EmpNo;
                 ViewBag.EmpName = recordInfor.EmpName;
@@ -106,13 +190,13 @@ namespace WebApplication_attw114.Controllers
                 ViewBag.AreaID = recordInfor.AreaID;
                 ViewBag.TypePatrol = recordInfor.TypePatrol;
                 ViewBag.UrlImage = recordInfor.UrlImage;
-                if (recordInfor.TypePatrol == 1)
+                if (recordInfor.TypePatrol == 2)
                 {
-                    ViewBag.TypePatrolName = "Biểu Tuần Tra Của Nhân Viên Bảo Vệ";
+                    ViewBag.TypePatrolName = "Biểu Tuần Tra Của Nhân Viên An Ninh";
                 }
                 else
                 {
-                    ViewBag.TypePatrolName = "Biểu Tuần Tra Của Nhân Viên An Ninh";
+                    ViewBag.TypePatrolName = "Biểu Tuần Tra Của Nhân Viên Bảo Vệ";
                 }
                     ViewBag.DatePatrol = recordInfor.DatePatrol.ToString("yyyy-MM-dd HH:mm:ss");
                 ViewData["ListPoint"] = new Dal.PatrolFit().PatrolRecord_GetListChecked(id);
