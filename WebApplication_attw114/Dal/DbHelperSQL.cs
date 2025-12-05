@@ -12,7 +12,7 @@ namespace WebApplication_attw114.Dal
     public abstract class DbHelperSQL
     {
         static SophyEncrypt SE = new SophyEncrypt();
-        public static string connectionString = "Data Source=10.224.24.30,4433;Initial Catalog=SwispeDB;User ID=swispe;Password=1234567Aa";
+        public static string connectionString = "Data Source=10.224.69.61,8989;Initial Catalog=SwispeDB;User ID=swispe;Password=!System114&";
         /// <summary>
         /// 方法名稱：DbHelperSQL
         /// 說明：

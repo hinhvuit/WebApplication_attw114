@@ -1,4 +1,7 @@
-﻿namespace WebApplication_attw114.Models
+﻿using System.Collections.Generic;
+using WebApplication_attw114.Models.PatrolFit.DTO;
+
+namespace WebApplication_attw114.Models
 {
     public class FcUser
     {
@@ -12,18 +15,15 @@
         public string Location { get; set; }
         public string FactoryName { get; set; }
         public int Id { get; set; }
-        public int FacID { get; set; }
         public string ZoneName { get; set; }
         public string TypeName { get; set; }
+        public int Type { get; set; }
     }
     public class CheckedList
     {
         public int UserID { get; set; }
         public int DeviceID { get; set; }
         public string Memo { get; set; }
-        public string ImageDevices { get; set; }
-        public string Type_Error { get; set; }
-        public string Type_Acc { get; set; }
     }
     public class RuleCheckedList
     {
@@ -32,9 +32,21 @@
         public string Memo { get; set; }
         public int IdChecked { get; set; }
     }
+    public class RuleCheckedListSign
+    {
+        public int RuleID { get; set; }
+        public bool IsOk { get; set; }
+        public string Memo { get; set; }
+    }
     public class RuleInfor
     {
         public int Id { get; set; }
         public string RuleName { get; set; }
+    }
+    public class DevicesSign {
+        public int UserID { get; set; }
+        public int DeviceID { get; set; }
+        public string Memo { get; set; }
+        public List<RuleCheckedListSign> ListChecked { get; set; }
     }
 }

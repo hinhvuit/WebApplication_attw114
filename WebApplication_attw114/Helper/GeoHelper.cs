@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeoCoordinatePortable;
+using System;
 
 namespace WebApplication_attw114.Helper
 {
@@ -23,6 +24,12 @@ namespace WebApplication_attw114.Helper
         private double ToRadians(double angle)
         {
             return angle * Math.PI / 180;
+        }
+        public double CalculateDistanceMetter(double lat1, double lon1, double lat2, double lon2)
+        {
+            var p1 = new GeoCoordinate(lat1, lon1);
+            var p2 = new GeoCoordinate(lat2, lon2);
+            return p1.GetDistanceTo(p2);
         }
     }
 }

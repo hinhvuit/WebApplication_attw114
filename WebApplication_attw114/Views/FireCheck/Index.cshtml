@@ -1,0 +1,192 @@
+﻿@* 
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860 
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Kiểm Tra Thiết Bị Phòng Cháy</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/lib/bootstrap5/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery.min.js"></script>
+    <script src="~/lib/bootstrap5/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: aliceblue;
+        }
+
+        .OutWidth {
+            width: 1100px;
+            position: relative;
+            background-color: aliceblue;
+            margin: 10px auto 20px;
+        }
+
+        .Textcenter {
+            text-align: center;
+        }
+
+        .OutWidth .table {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="OutWidth Textcenter">
+        <h1><label id="lbl_tit">Biểu Kiểm Tra @ViewBag.typeName </label></h1>
+
+        <!-- I. Thông Tin Người Tuần Tra -->
+        <table class="table table-bordered">
+            <tr><th colspan="4">I. Thông Tin Người Kiểm Tra</th></tr>
+            <tr>
+                <td>Mã Thẻ</td>
+                <td><label style="color:dodgerblue">@ViewBag.EmpNo</label></td>
+                <td>Họ Tên</td>
+                <td><label style="color:dodgerblue">@ViewBag.EmpName</label></td>
+            </tr>
+        </table>
+
+        <!-- II. Thông Tin Điểm Tuần Tra -->
+        <table class="table table-bordered">
+            <tr><th colspan="4">II. Thông Tin Thiết Bị Kiểm Tra</th></tr>
+            <tr>
+                <td>Nhà Xưởng</td>
+                <td><span style="color:dodgerblue">@ViewBag.factoryName</span></td>
+                <td>Khu Vực</td>
+                <td><span style="color:dodgerblue">@ViewBag.zoneName</span></td>
+            </tr>
+            <tr>
+                <td>Vị Trí</td>
+                <td><span style="color:dodgerblue">@ViewBag.location</span></td>
+                <td>Mã Thiết Bị</td>
+                <td><span style="color:dodgerblue">@ViewBag.codeDevice</span></td>
+            </tr>
+        </table>
+
+        <!-- III. Hạng Mục Kiểm Tra -->
+        <table class="table table-bordered">
+            <thead>
+                <tr><th colspan="4">III. Hạng Mục Kiểm Tra</th></tr>
+                <tr>
+                    <td>Hạng mục</td>
+                    <td>Bình Thường</td>
+                    <td>Bất Thường</td>
+                    <td>Ghi Chú</td>
+                </tr>
+            </thead>
+            <tbody id="body_rule"></tbody>
+            <tr>
+                <td>Ghi Chú</td>
+                <td colspan="3">
+                    <input type="text" id="txt_Memo" class="form-control" placeholder="Ghi chú nếu có" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-center">
+                    <button id="btnSign" class="btn btn-primary">Xác Nhận Kiểm Tra</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Hidden Inputs -->
+    @* Dữ liệu từ ViewBag *@
+    <input type="hidden" id="hid_UserID" value="@ViewBag.userId" />
+    <input type="hidden" id="hid_dvid" value="@ViewBag.deviceId" />
+    <input type="hidden" id="hid_codedevice" value="@ViewBag.codeDevice" />
+    @Html.Hidden("RedirectToSuccess", Url.Action("Index", "Success"))
+
+    <!-- JavaScript -->
+    <script>
+                $(document).ready(function () {
+            getListTest();
+
+            $('#btnSign').click(function () {
+                var listRule = [];
+
+                // ✅ Đọc lại giá trị tại thời điểm người dùng click
+                var userID = $('#hid_UserID').val();
+                var deviceID = $('#hid_dvid').val();
+                var memo = $('#txt_Memo').val();
+                var redirectUrl = $("#RedirectToSuccess").val();
+
+                if (!userID || !deviceID) {
+                    alert('Vui lòng nhập đầy đủ thông tin nhân viên');
+                    return;
+                }
+
+                $('input[type="radio"]:checked').each(function () {
+                    var ruleID = $(this).attr('name').split('_')[1];
+                    var value = $(this).val();
+                    var ruleMemo = $('input[name="memo_' + ruleID + '"]').val();
+
+                    listRule.push({
+                        ruleID: parseInt(ruleID),
+                        isOk: value === 'OK',
+                        memo: ruleMemo || '',
+                    });
+                });
+
+                if (listRule.length === 0) {
+                    alert('Vui lòng chọn ít nhất một hạng mục.');
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/FireCheck/SaveCheckedList',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        userID,
+                        deviceID,
+                        memo,
+                        listChecked: listRule
+                    }),
+                    success: function (data) {
+                        alert('Ký thành công');
+                        console.log('SignPatrol Response:', data);
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('SignPatrol Error:', xhr.responseText);
+                        alert('Ký không thành công: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        function getListTest() {
+            var codedevice = $("#hid_codedevice").val();
+            $.ajax({
+                url: '/FireCheck/GetRules',
+                type: 'GET',
+                data: { codeDevice: codedevice },
+                success: function (response) {
+                    console.log('GetRules Response:', response);
+                    $('#body_rule').empty();
+                    $.each(response, function (index, item) {
+                        var row = `
+                            <tr>
+                                <td style="text-align:left;">${item.ruleName}<input type="hidden" name="ruleID_${item.id}" value="${item.id}" /></td>
+                                <td><input type="radio" name="rule_${item.id}" value="OK" checked /></td>
+                                <td><input type="radio" name="rule_${item.id}" value="NG" /></td>
+                                <td><input type="text" name="memo_${item.id}" class="form-control" /></td>
+                            </tr>`;
+                        $('#body_rule').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('GetRules Error:', error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

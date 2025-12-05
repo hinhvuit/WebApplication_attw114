@@ -37,7 +37,7 @@ namespace WebApplication_attw114.Controllers
                     ViewBag.Id = id;
                     ViewBag.Name = model.Name;
                     ViewBag.EndTime = model.EndTime;
-                    ViewBag.QRImage = @"http://10.224.24.30/Upload/Qrcode/"+model.QRImage;
+                    ViewBag.QRImage = @"http://10.224.69.61/Upload/Qrcode/"+model.QRImage;
                     ViewBag.TimeStart = model.TimeStart + " - ";
                     ViewBag.Type = 1;
                 }

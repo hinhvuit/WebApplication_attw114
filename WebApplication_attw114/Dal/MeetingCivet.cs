@@ -8,7 +8,7 @@ namespace WebApplication_attw114.Dal
     public class MeetingCivet
     {
         
-        public static string StrConn = "Data Source=10.224.24.30,4433;Initial Catalog=CertificateDB;User ID=formsign;Password=1234567Aa";
+        public static string StrConn = "Data Source=10.224.69.61,8989;Initial Catalog=CertificateDB30;User ID=formsign;Password=!System114&";
         public int ADD(Models.MeetingCivet model)
         {
             int ID;

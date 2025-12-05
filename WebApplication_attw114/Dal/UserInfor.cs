@@ -11,7 +11,7 @@ namespace WebApplication_attw114.Dal
     public class UserInfor
     {
         static SophyEncrypt SE = new SophyEncrypt();
-        public static string connectionString = "Data Source=10.224.24.30,4433;Initial Catalog=SwispeDB;User ID=swispe;Password=1234567Aa";
+        public static string connectionString = "Data Source=10.224.69.61,8989;Initial Catalog=SwispeDB;User ID=swispe;Password=!System114&";
         public int ADD(Models.UserMember model) {
             int id = 0;
             using (SqlConnection cn = new SqlConnection(connectionString))

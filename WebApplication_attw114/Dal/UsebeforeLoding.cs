@@ -9,7 +9,7 @@ namespace WebApplication_attw114.Dal
 {
     public class UsebeforeLoding
     {
-        public const string ConnecStr = "Data Source=10.224.24.30,4433;Initial Catalog=CertificateDB;User ID=formsign;Password=1234567Aa";
+        public const string ConnecStr = "Data Source=10.224.69.61,8989;Initial Catalog=CertificateDB30;User ID=formsign;Password=!System114&";
 
         private static SqlCommand BuildQueryCommand(SqlConnection connection, string storedProcName, IDataParameter[] parameters)
         {

@@ -12,7 +12,7 @@ namespace WebApplication_attw114.Dal
     {
         private readonly IConfiguration _config;
 
-        string strconn = "Data Source=10.224.24.30,4433;Initial Catalog=CertificateDB;User ID=formsign;Password=1234567Aa";
+        string strconn = "Data Source=10.224.69.61,8989;Initial Catalog=CertificateDB30;User ID=formsign;Password=!System114&";
         public int CheckLoginTest(string EmpNo, string Emp)
         {
             //var strconn = _config["ConnectionStrings:DefaultConnection"];

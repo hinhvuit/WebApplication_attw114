@@ -11,7 +11,7 @@ namespace WebApplication_attw114.Dal
 {
     public class PatrolFit
     {
-        string strconn = "Data Source=10.224.24.30,4433;Initial Catalog=CertificateDB;User ID=formsign;Password=1234567Aa";
+        string strconn = "Data Source=10.224.69.61,8989;Initial Catalog=CertificateDB30;User ID=formsign;Password=!System114&";
         /// <summary>
         /// Lấy Tiêu Chuẩn Của Điểm Kiểm tra
         /// </summary>

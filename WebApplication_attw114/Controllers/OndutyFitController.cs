@@ -79,7 +79,8 @@ namespace WebApplication_attw114.Controllers
                     double longti = Convert.ToDouble(pointInfor.Longti);
                     double latiNew = Convert.ToDouble(HttpContext.Request.Query["lati"]);
                     double longtiNew = Convert.ToDouble(HttpContext.Request.Query["longti"]);
-                    double distance = geoHelper.CalculateDistance(lati, longti, latiNew, longtiNew);
+                    //double distance = geoHelper.CalculateDistance(lati, longti, latiNew, longtiNew);--old code
+                    double distance = geoHelper.CalculateDistanceMetter(lati, longti, latiNew, longtiNew);
                     if (distance > 150)
                     {
                         ViewBag.Distance = "Vượt quá phạm vi tuần tra, bạn không thể tuần tra tại đây";
