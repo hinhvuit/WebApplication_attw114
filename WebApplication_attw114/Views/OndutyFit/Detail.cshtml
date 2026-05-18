@@ -126,7 +126,7 @@
         ];
 
         function showDetailModal(checkedId, pointId) {
-            const url = `/OndutyFit/getrulechecked?idrecord=${idrecord}&pointid=${pointId}`;
+            const url = `getrulechecked?idrecord=${idrecord}&pointid=${pointId}`;
 
             $('#modalDetailBody').html('<div class="text-center"><span class="spinner-border"></span> Đang tải dữ liệu...</div>');
             $('#modalDetail').modal('show');

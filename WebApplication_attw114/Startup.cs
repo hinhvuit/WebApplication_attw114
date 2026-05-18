@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,19 @@ namespace WebApplication_attw114
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+            // set PathBase from header if nginx strips prefix
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Headers.TryGetValue("X-Forwarded-Prefix", out StringValues prefix) &&
+                    !StringValues.IsNullOrEmpty(prefix))
+                {
+                    context.Request.PathBase = prefix.ToString().TrimEnd('/');
+                }
+                await next();
+            });
+
+            app.UsePathBase("/onduty"); // keep or remove based on chosen approach
+
             app.UseStaticFiles();
 
             app.UseRouting();

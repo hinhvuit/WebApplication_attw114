@@ -156,10 +156,10 @@
         if(lati=="0"&&longti=="0"){
         }else{
             $("#btn_UpdateLocation").hide();
-            if(er=="1"){
-                alert(ms);
-                location.href = RederectUrl; // Chuyển hướng đến trang ErrorLocation nếu có lỗi
-            }
+            //if(er=="1"){
+                //alert(ms);
+                //location.href = RederectUrl; // Chuyển hướng đến trang ErrorLocation nếu có lỗi
+            //}
         }
             $("#btn_UpdateLocation").click(function () {
             console.log("startupdatelocation");
@@ -172,7 +172,7 @@
             // Gửi dữ liệu lên API Update
             $.ajax({
                 type: 'POST',
-                url: '/OndutyFit/UpdateLocation',
+                url: 'UpdateLocation',
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -243,7 +243,7 @@
                 // Gửi dữ liệu lên API SignPatrol
                 $.ajax({
                     type: 'POST',
-                    url: '/OndutyFit/SignPatrol',
+                    url: 'SignPatrol',
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -288,7 +288,7 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify(parameter),
-                url: '/OndutyFit/GetList',
+                url: 'GetList',
                     success: function (dataOut) {
                 renderHistory(dataOut.list);
                         //console.log(dataOut);
@@ -298,7 +298,7 @@
                     }
                 });
                 $.ajax({
-            url: '/OndutyFit/GetRules', 
+            url: 'GetRules',
                     type: 'GET',
                     data: {
                     codePoint: codepoint, // Replace with actual codePoint value

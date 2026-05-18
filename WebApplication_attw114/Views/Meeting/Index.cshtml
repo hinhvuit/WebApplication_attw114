@@ -178,7 +178,7 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify(parameter),
-                    url: '/Meeting/UserCivetLoginRecord_GetList',
+                    url: 'UserCivetLoginRecord_GetList',
                     success: function (dataOut) {
                         jQuery('#bodyApp').empty();
                         var html = '';
@@ -201,7 +201,7 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify(parameter),
-                    url: '/Meeting/UserCivetLoginRecord_GetAllCount',
+                    url: 'UserCivetLoginRecord_GetAllCount',
                     success: function (dataOut) {
                         jQuery('#countpeo').empty();
                         var html = '';

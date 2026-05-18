@@ -373,7 +373,7 @@
                 dataType: 'json',
                 contentType:'application/json',
                 data: JSON.stringify(parameter),
-                url: '/OndutySignEmpAttw114/GetHistorySignNow',
+                url: 'GetHistorySignNow',
                 success: function(dataOut) {
                     alert('LocationDetailName1:' + dataOut[1]['LocationDetailName']);
 
@@ -452,7 +452,7 @@
                     data.append("ImageName", Nameorigin.toString());
                     $.ajax({
                         type: "POST",
-                        url: '/OndutySignEmpAttw114/UploadImageNew1',
+                        url: 'UploadImageNew1',
                         contentType: false,
                         processData: false,
                         data: data,
@@ -588,7 +588,7 @@
            $.ajax({
                 type: 'POST',
                 dataType: 'text',
-                url: '/OndutySignEmpAttw114/SignAttw',
+                url: 'SignAttw',
                 data:parameter,
                 success: function(daa) {
                     //alert('Complete name: '+ daa['StatusContent']);
@@ -606,7 +606,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: '/OndutySignEmpAttw114/TestController',
+                url: 'TestController',
                 /* data:{"name" : $("#txt_name").val }, */
                 success: function(daa) {
                     alert('Complete name: '+ daa[0]['name']);

@@ -138,7 +138,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/FireCheck/SaveCheckedList',
+                    url: 'SaveCheckedList',
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -165,7 +165,7 @@
         function getListTest() {
             var codedevice = $("#hid_codedevice").val();
             $.ajax({
-                url: '/FireCheck/GetRules',
+                url: 'GetRules',
                 type: 'GET',
                 data: { codeDevice: codedevice },
                 success: function (response) {

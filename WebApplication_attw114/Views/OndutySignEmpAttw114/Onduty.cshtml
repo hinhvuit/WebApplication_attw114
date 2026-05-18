@@ -418,36 +418,6 @@
         var codeForIcvet = $('#Code02').text();
         TypeForm = 1;
 
-        function CallApi() {
-            /*var code_i = $('#Code02').text();
-            var parameter = {
-                code: codeForIcvet,
-                appid: "A36PAwlql7vvuGDueqKSMw2"
-            };
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                url: 'http://civetInterface.foxconn.com/open/get_user_info_bycode',
-                data: JSON.stringify(parameter),
-                success: function(daatt) {
-                    if (daatt['realname'] != null) {
-                        $("#txt_EmpName").html(daatt['realname']);
-                        $("#txt_EmpNo").html(daatt['civetno']);
-
-                    }
-                    else {
-                        //alert('Complete name: '+ daatt['realname']);
-                    }
-
-                },
-                error: function() {
-                    alert('An error occurred uploading data.');
-                }
-            });*/
-
-        };
-
         /* after is a function get ListHistory of sign*/
         function getListTest() {
             var LocationIDstr = $("#LocationID").text();
@@ -463,7 +433,7 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(parameter),
-                url: '/OndutySignEmpAttw114/GetHistorySignNow',
+                url: 'GetHistorySignNow',
                 success: function (dataOut) {
                     alert('LocationDetailName1:' + dataOut[1]['LocationDetailName']);
 
@@ -503,29 +473,10 @@
 
 
         window.onload = function () {
-
-            /*
-            var canvas = document.getElementById("mycanvas");
-            var contextt = canvas.getContext("2d");
-            centerX = 100;
-            centerY = 100;
-            radius = 12;
-            contextt.beginPath();
-            contextt.fillStyle = '#0077aa';
-            contextt.strokeStyle = '#0077aa';
-            contextt.lineWidth = 2;
-            contextt.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-            contextt.fill();
-            contextt.stroke();
-            */
             CallApi();
-            //getListTest();
 
         };
 
-
-
-        /* Function Upload File */
         function UploadImageFile() {
             var retval;
             var files = document.getElementById('FileupLoadImage').files;// $('#file').files[0];// e.target.files;
@@ -544,7 +495,7 @@
                     data.append("ImageName", Nameorigin.toString());
                     $.ajax({
                         type: "POST",
-                        url: '/OndutySignEmpAttw114/UploadImageNew1',
+                        url: 'UploadImageNew1',
                         contentType: false,
                         processData: false,
                         data: data,
@@ -565,34 +516,6 @@
         };
         //upload image
         $("#btn_Upload").click(function () {
-            /*
-            var files = document.getElementById('FileupLoadImage').files;// $('#file').files[0];// e.target.files;
-            if (files.length > 0) {
-                if (window.FormData !== undefined) {
-                    var data = new FormData();
-                    for (var x = 0; x < files.length; x++) {
-                        data.append("file" + x, files[x]);
-                        //data.append(base64String, base64String);
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: '/OndutySignEmpAttw114/UploadImage',
-                        contentType: false,
-                        processData: false,
-                        data: data,
-                        success: function (result) {
-                            alert(result);
-                            $("#FileupLoadImage").val(null);
-                        },
-                        error: function (xhr, status, p3, p4) {
-                            alert('Something is going to wrong please try agan!');
-                        }
-                    });
-                } else {
-                    alert("Upgrade your browser!");
-                }
-            }
-            */
 
             var ImageName;
             var file1 = document.getElementById('FileupLoadImage');
@@ -604,36 +527,7 @@
                 alert("Khong co file nao duoc chon");
 
             }
-
-
-            /*var fileName = document.getElementById("FileupLoadImage").files[0].name;
-            var fileExtension = fileName.split('.').pop();
-            alert("."+fileExtension);*/
-            /*
-            $.ajax({
-            type: "POST",
-            //url: '/OndutySignEmpAttw114/Testprint',
-            url: '@Url.Action("Testprint")',
-            data: {mmm: "dadx", bbb: "cvbxcvb"},
-            dataType: "text",
-            success: function (msg) {
-                alert(msg);
-            },
-            error: function (req, status, error) {
-                alert(error);
-                alert(req);
-            }
-            });*/
-
         });
-
-        // thay doi binh thuong va bat thuong
-        /*$("#Select1").change(function() {
-            TypeForm = 1;
-            //alert("you have changed value to:" + $(this).val());
-            alert("you have changed value to:" + $(this).find("option:selected").text());
-        });
-        */
         $("#Radio1").change(function () {
             alert("you have changed value from:" + TypeForm);
             TypeForm = 1;
@@ -642,7 +536,6 @@
         $("#Radio2").change(function () {
             alert("you have changed value from:" + TypeForm);
             TypeForm = 2;
-            //alert("you have changed value to:" + $(this).val());
         });
         function delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -685,7 +578,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'text',
-                url: '/OndutySignEmpAttw114/SignAttw',
+                url: 'SignAttw',
                 data: parameter,
                 success: function (daa) {
                     //alert('Complete name: '+ daa['StatusContent']);
@@ -699,11 +592,6 @@
 
         /* COMMIT Click */
         $('#btn_Submit').click(function () {
-            //$('#txt_test').html("aaaaa1");
-            //$('#txt_testTxt').val("aaaaa1");
-            //document.getElementById('txt_testTxt').value = "mmmm";
-            //document.getElementById('txt_test').innerHTML = "bbbbb";
-            //alert("Handler for .click() called.");
 
             //if ($("#LocationID").text() == "CGQV15") {
             cm.getGPS({
@@ -768,7 +656,7 @@
                     $.ajax({
                         type: 'POST',
                         dataType: 'text',
-                        url: '/OndutySignEmpAttw114/UpdateLocation',
+                        url: 'UpdateLocation',
                         data: parameter,
                         success: function (daa) {
                             //alert('Complete name: '+ daa['StatusContent']);
@@ -789,7 +677,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: '/OndutySignEmpAttw114/TestController',
+                url: 'TestController',
                 /* data:{"name" : $("#txt_name").val }, */
                 success: function (daa) {
                     alert('Complete name: ' + daa[0]['name']);
@@ -799,49 +687,6 @@
                 }
             });
         });
-
-        /*$('#button1').click(function() {
-            var code_i = $('#Code03').text();
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: '/OndutySignEmpAttw114/TestSaveCode',
-                data:{"code" : code_i },
-                success: function(daa) {
-                    alert('Complete name: '+ daa[0]['name']);
-                },
-                error: function() {
-                    alert('An error occurred uploading data.');
-                }
-            });
-        });*/
-
-        /*$('#button2').click(function() {
-            var code_i = $('#Code02').text();
-            var parameter = {
-                code: codeForIcvet,
-                appid: "A36PAwlql7vvuGDueqKSMw2"
-            }
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                url: 'http://civetInterface.foxconn.com/open/get_user_info_bycode',
-                data: JSON.stringify(parameter),
-                success: function(daa1) {
-                    if (daa1['nickname'] != null) {
-                        alert('Complete name: '+ daa1['nickname']);
-                    }
-                    if (daa1['exception_code'] != null) {
-                        alert('Exceptsion: ' + daa1['exception_code']);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred uploading data.');
-                }
-            });
-        });
-        */
 
 
     </script>

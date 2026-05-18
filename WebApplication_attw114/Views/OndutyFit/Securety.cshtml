@@ -151,7 +151,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/OndutyFit/UpdateLocation',
+                    url: 'UpdateLocation',
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -203,7 +203,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/OndutyFit/SignPatrol',
+                    url: 'SignPatrol',
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -234,7 +234,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/OndutyFit/GetList',
+                    url: 'GetList',
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({ code_point: codepoint, empNo: empNo, typePatrol: 3 }),
@@ -247,7 +247,7 @@
                 });
 
                 $.ajax({
-                    url: '/OndutyFit/GetRules',
+                    url: 'GetRules',
                     type: 'GET',
                     data: { codePoint: codepoint, typePatrol: 3 },
                     success: function (response) {
